@@ -1,0 +1,196 @@
+\section{Wednesday, September 11, 2019}
+
+So far, we've seen both while-loops and do-while loops. Today, we'll introduce a third type of loop. 
+
+\subsection{For Loops}
+
+In a \vocab{for-loop}, a counter is typically set, and the condition is tested before each body execution. The updated is performed at the end of each iteration. The general form of a for-loop is as follows:
+\[
+\verb! for(initialization; condition; update) { statements }!
+\]
+
+Here's a simple example of a program that uses a for-loop:
+
+\begin{lstlisting}
+public class ForExample {
+    public static void main(String args[]) {
+        int i, limit = 3;
+        System.out.println("First loop: ");
+        i = 1;
+        while (i <= limit) {
+            System.out.println(i);
+            i++;
+        }
+        System.out.println("Second loop: ");
+        for (i = 1; i <= limit; i++) {
+            System.out.println(i);
+        }
+    }
+
+}
+\end{lstlisting}
+
+This example prints the numbers between $1$ and $3$ inclusive twice using a while-loop and then a for-loop so that we can easily compare how the two loops are structured. Here are the key things to keep in mind:
+
+\begin{itemize}
+    \item The \verb!initialization! portion of the for-loop is only executed once. This means that we only set the variable \verb!i! to $1$ once at the start of the for-loop. 
+    \item At the beginning of each iteration of the for-loop, we check whether the condition \verb!i <= limit! holds. This is similar to the while-loop in which we also check whether a condition holds at the beginning of each iteration.
+    \item If the condition holds, we execute the body of the for-loop. Finally, we perform the operations stated in the \verb!update! section of the for-loop. In this example, the \verb!update! operation is to increment \verb!i! by one. 
+\end{itemize}
+
+
+We can also declare variables that we've never used before in the \verb!initialization! portion of our for-loop. This is demonstrated through the example below:
+
+\begin{lstlisting}
+public class ForExample {
+    public static void main(String args[]) {
+        for (int k = 1; k <= 3; k++) {
+            System.out.println(k);
+        }
+    }
+}
+\end{lstlisting}
+
+It's also valid to leave one of the three components (initialization, condition, or update) of a for-loop blank. However, it's up to the programmer to be sure that the loop is not an infinite loop. Here's an example of a for-loop in which the ``update" portion is left blank:
+
+\begin{lstlisting}
+public class ForExample {
+    public static void main(String args[]) {
+        for (int k = 1; k <= 3; )
+            System.out.println(k);
+            k++;
+        }
+    }
+}
+\end{lstlisting}
+
+Note that this program now increments the loop variable \verb!k! at the bottom of the for-loop. Without this incrementing statement, we would have an infinite loop. 
+
+\subsection{Nested Loops}
+
+Now that we've introduced the three types of loops that we will be using in this class, we will now demonstrate some interesting ways in which we can use loops inside of loops to perform various tasks. When we place a loop inside of a loop, we say that our loops are \vocab{nested}.  \\
+
+
+Here's a first example that we can look at:
+
+\begin{lstlisting}
+public class NestedWhile {
+	public static void main(String[] args) {
+		int maxRows = 3, maxCols = 4, row;
+
+		row = 1;
+		while (row < maxRows) {
+			int col = 1;
+			
+			while (col < maxCols) {
+				System.out.println("Row: " + row + " Col: " + col);
+				col++;
+			}
+			System.out.println();
+
+			row++; /* Next row */
+		}
+	}
+}
+\end{lstlisting}
+
+
+When we have two nested loops, every iteration of the outermost loop consists of a full execution of the innermost loop. Thus, for each row starting from \verb!row = 1! up to \verb!row = 2!, we will initialize \verb!col! to \verb!1!, and iterate up to \verb!col = 3!. The inner-most \verb!System.out.println! statement will thus print out the following statements:
+
+\begin{lstlisting}
+Row: 1 Col: 1
+Row: 1 Col: 2
+Row: 1 Col: 3
+
+Row: 2 Col: 1
+Row: 2 Col: 2
+Row: 2 Col: 3
+\end{lstlisting}
+
+It is sometimes useful to trace out the values of each variable during an iteration to figure out what a loop is doing.
+
+
+Now let's rewrite this code but with for-loops: 
+
+
+\begin{lstlisting}
+public class NestedFor {
+	public static void main(String[] args) {
+		int maxRow = 9, maxCol = 9;
+
+		for (int row = 1; row <= maxRow; row++) {
+			for (int col = 1; col <= maxCol; col++) {
+				System.out.print("Row: " + row + " Col: " + col);
+			}
+			System.out.println();
+		}
+	}
+}
+\end{lstlisting}
+
+As we can see, this is a much more compact way of doing the same thing that the previous code segment was doing. Now, we're declaring our loop variables as a part of our for-loop, and the inside of our nested for-loop only contains one line. \\
+
+
+Using nested loops, we can also draw nice-looking designs. For example, the following program creates a $3\times 4$ grid in which we print an asterisk if the current row number is even and a dollar sign otherwise:
+
+\begin{lstlisting}
+public class NestedFor {
+	public static void main(String[] args) {
+		int maxRow = 4, maxCol = 5;
+
+		for (int row = 1; row <= maxRow; row++) {
+			for (int col = 1; col <= maxCol; col++) {
+				if (row % 2 == 0) {
+				    System.out.print("*");
+				} else {
+				    System.out.print("$")
+				}
+			}
+			System.out.println();
+		}
+	}
+}
+\end{lstlisting}
+
+A new line is printed every time a row is completed. The resulting output is shown below:
+
+\begin{lstlisting}
+$$$$
+****
+$$$$
+****
+\end{lstlisting}
+
+
+We can also create a triangle by stopping the innermost for-loop when it reaches the value of \verb!row!. This way, each new line prints one more character than the previous line:
+
+\begin{lstlisting}
+public class NestedFor {
+	public static void main(String[] args) {
+		int maxRow = 4, maxCol = 5;
+
+		for (int row = 1; row <= maxRow; row++) {
+			for (int col = 1; col <= row; col++) { /* Note the change. */
+				if (row % 2 == 0) {
+				    System.out.print("*");
+				} else {
+				    System.out.print("$")
+				}
+			}
+			System.out.println();
+		}
+	}
+}
+\end{lstlisting}
+
+It is a little bit harder to figure out what's going on this program, so it might be helpful to trace out what gets printed for the first few iterations of the loop (write down the values of \verb!row! and \verb!col!, and trace what happens).\\
+
+
+The new output is as follows:
+
+\begin{lstlisting}
+$
+**
+$$$
+****
+\end{lstlisting}

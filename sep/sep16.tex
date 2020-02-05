@@ -1,0 +1,125 @@
+\section{Monday, September 16, 2019}
+
+Today, we'll continue our discussion on methods. 
+
+\subsection{More on Methods}
+
+Recall that there are two types of methods that we can implement: non-static methods (which require an object, like \verb!Scanner!), or static methods (which don't require objects). \\
+
+When we call a method, the control flow of the program goes to the method. The contents of the methods are executed, and we subsequently return to the \verb!main! method, where we continue execution from where we left off. When a method doesn't return a value, we say that method is \verb!void!. Moreover, this \verb!void! return type must be indicated in the method's header. But, what does this mean? This means that a call to the method cannot be \textit{evaluated}. That is, we cannot set a variable equal to the result of the method call. \\
+
+Methods can also take \vocab{parameters}, which are values that we pass in when we are calling the function. Parameters allow us to ``customize" how a method gets executed. Moreover, modifying these parameters inside of the method does not result in the values being changed outside of the method (the Java compiler makes copies of the variables before the method can use the variables). \\
+
+
+Consider the following Java program, which has a few methods:
+\begin{lstlisting}
+import java.util.Scanner;
+
+public class MethodsIntro {
+
+	/* Does not return a value and has no parameters */
+	public static void printHeader() {
+		System.out.println("****************************");
+		System.out.println("****************************");
+	}
+
+	/* Returns a value (boolean) and has one parameter */
+	public static boolean isValid(int value) {
+		if (value >= 1 && value <= 100) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/* Does not return a value (void) and has two parameters */
+	public static void printRectangle(int width, int height, char symbol) {
+		for (int row = 1; row <= width; row++) {
+			for (int col = 1; col <= height; col++) {
+				System.out.print(symbol);
+			}
+			System.out.println();
+		}
+	}
+
+	public static void main(String[] args) {
+		int width, height;
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.print("Enter width: ");
+		width = scanner.nextInt();
+
+		System.out.print("Enter height: ");
+		height = scanner.nextInt();
+
+		if (isValid(width) && isValid(height)) {
+			printHeader();
+			printRectangle(width, height, '*');
+		} else {
+			System.out.println("Invalid values");
+		}
+
+		scanner.close();
+	}
+}
+\end{lstlisting}
+
+The first method, \verb!printHeader()!, does not take in any parameters, and it does not return anything either. The method simply prints two lines full of asterisks, which serves as a header. \\
+
+
+The second method, \verb!isValid(int value)! takes in one integer parameter named \verb!value!. The function subsequently returns true if \verb!value! is between $1$ and $100$, inclusive, and the method returns false otherwise. This return statement indicates what the method call will evaluate to. \\
+
+
+What happens in this program? A summary is provided below:
+\begin{itemize}
+    \item In the main method, we declare two integer variables \verb!width! and \verb!height!. We prompt the user to enter a width and a height, and these values are read in.
+    \item Next, we check if the width and height entered are valid (i.e. they should be in-between $1$ and $100$, inclusive). If so, then we print our header, and we print a rectangle full of asterisks. Otherwise, we print ``Invalid Values." In either case, the scanner closes, and the program terminates afterwards.
+\end{itemize}
+
+
+Note how methods allow us to easily customize what we are drawing our rectangle with as well as the dimensions of the rectangle being drawn. 
+
+\subsection{Precedence}
+
+\vocab{Precedence} rules answer how to evaluate expressions. More precisely, higher-precedence operators are evaluated first (e.g. multiplication before addition), and lower-precedence operators are evaluated afterwards. Below is a list of common operations and operators used in Java in order from highest precedence to lowest precedence:
+
+\begin{itemize}
+    \item Parentheses
+    \item Unary operators (operators that act on a single variable): \verb@++x, x++, x--, !x@. 
+    \item Multiplication, division, and the modulus operator
+    \item Addition and subtraction
+    \item Comparison operators, like \verb!<, >, >=, <=!
+    \item Equality checkers, like \verb@==@ and \verb@!=@. 
+    \item Logical \verb!AND! operator
+    \item Logical \verb!OR! operator
+    \item Assignment operators, like \verb!=, +=, -=!, etc. 
+\end{itemize}
+
+This list isn't exhaustive, and it isn't necessary to memorize this list either. \\
+
+
+\subsection{Short-Circuiting}
+
+As soon as Java knows that an entire expression is false, or an entire expression is true, it quites evaluating the expression it is currently looking at. For example, suppose we have a variable named \verb!x! that is equal to $4$. If we begin looking at the condition 
+\[
+\verb!if (x > 10 && y == 0) { ... }!,
+\]
+Java will not even look at the \verb!y == 0! portion of the condition since, right after looking at the \verb!x > 10! condition, it can immediately conclude that there is no way that the entire expression will evaluate to \verb!true! (if we were using the logical \verb!OR! operator instead of the logical \verb!AND! operator, we would still need to look at the remainder of the Boolean expression). \\
+
+This can have some profound consequences. For example, consider the following code segment:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        int x = 0, y = 1;
+        if ((y > 1) && (++x == 0)) {
+            --y;
+        }
+        System.out.println(x);
+    }
+}
+\end{lstlisting}
+
+Due to short-circuiting, the output of this program is $0$. Why? The expression \verb!y > 1! is initially false. Thus, we don't even look at the condition \verb!(++x == 0)!; this statement is not executed. \\
+
+This process of exiting a Boolean expression early is known as \vocab{short-circuiting}. 

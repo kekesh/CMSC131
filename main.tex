@@ -1,0 +1,134 @@
+\documentclass[english, 10pt]{article}
+\usepackage[sexy]{evan}
+\usepackage{inconsolata}
+\usepackage[shellescape]{gmp}
+\usepackage{titlesec}
+\usepackage{color}
+\usetikzlibrary{arrows.meta}
+\definecolor{editorGray}{rgb}{0.95, 0.95, 0.95}
+\definecolor{editorOcher}{rgb}{1, 0.5, 0} % #FF7F00 -> rgb(239, 169, 0)
+\definecolor{editorGreen}{rgb}{0, 0.5, 0} % #007C00 -> rgb(0, 124, 0)
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[toc,page]{appendix}
+\usepackage{todonotes}
+\usepackage{blindtext}
+\usepackage{multicol}
+\usetikzlibrary{calc,shapes.multipart,chains,arrows}
+\usepackage{esint}
+\usetikzlibrary{shapes.multipart}
+
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=Java,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\allowdisplaybreaks%
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\thiscoursecode}{CMSC 132}
+\newcommand{\thiscoursename}{Intro to Object Oriented Programming II}
+\newcommand{\thisprof}{Prof. Nelson Padua-Perez}
+\newcommand{\me}{Ekesh Kumar}
+\author{Ekesh Kumar\thanks{Email: \mailto{0ekesh@gmail.com}}}
+\newcommand{\thisterm}{Fall 2019}
+\newcommand{\website}{https://www.cs.umd.edu/class/fall2019/cmsc132/}%chktex 8
+\usepackage{ifpdf}
+\ifpdf%
+\DeclareGraphicsRule{*}{mps}{*}{}
+\fi
+\lhead{\textbf{\me} \\ \textbf{\thisprof}}
+\rhead{\textbf{\thiscoursename} \\ \textbf{\thisterm}}
+
+\newcommand{\notefront}{%
+\pagenumbering{arabic}
+\begin{center}
+{\small}
+\textbf{\Huge{{\thiscoursecode}}}
+{\Huge \par}
+{\Large{{\thiscoursename}}}\\
+\vspace{0.1in}
+\vspace{0in}\includegraphics[scale=0.3]{umdcs.jpg} \\
+\vspace{0.1in}{\me} \\
+{\thisprof} \ $\bullet$ \ {\thisterm} \ $\bullet$ \ {{University of Maryland}} \\
+{\ttfamily \url{\website}} \\
+\end{center}
+}
+
+\begin{document}
+  \thispagestyle{empty}
+  \notefront
+  \tocandfigures
+  
+% August
+\include{aug/aug26}%
+\include{aug/aug28}%
+\include{aug/aug30}%
+% September 2 was labor day.
+\include{sep/sep04}%
+\include{sep/sep06}%
+\include{sep/sep09}%
+\include{sep/sep11}%
+\include{sep/sep13}%
+\include{sep/sep16}%
+\include{sep/sep18}%
+\include{sep/sep20}%
+\include{sep/sep23}%
+\iffalse
+\include{sep/sep25}%
+\include{sep/sep30}%
+% October
+\include{oct/oct2}%
+\include{oct/oct4}%
+\include{oct/oct7}% 
+\include{oct/oct9}%
+\include{oct/oct11}%
+\include{oct/oct14}%
+\include{oct/oct16}%
+\include{oct/oct18}%
+\include{oct/oct21}%
+\include{oct/oct23}%
+\include{oct/oct25}%
+\include{oct/oct28}%
+\include{oct/oct30}%
+% November
+\include{nov/nov1}%
+\include{nov/nov4}% 
+\include{nov/nov6}%
+\include{nov/nov11}% November 11 covers the material for two lectures.
+\include{nov/nov13}%
+% no lecture nov15
+\include{nov/nov18}%
+\include{nov/nov20}%
+\include{nov/nov22}%
+\include{nov/nov25}%
+% december
+\include{dec/dec2}%
+\include{dec/dec4}%
+\include{dec/dec6}%
+\fi
+% dec 9 = final exam review day. last day of class. students asked questions and prof answered.
+
+\begin{thebibliography}{9}
+\bibitem{effectivejava} 
+Bloch, Joshua. Effective Java. Pearson Education India, 2016.
+\end{thebibliography}
+
+
+\end{document}

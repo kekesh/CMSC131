@@ -1,0 +1,240 @@
+\section{Wednesday, August 28, 2019}
+
+\subsection{Our First Program}
+
+Today, we'll look at our first Java program:
+
+\begin{lstlisting}
+public class FirstProgram {
+    public static void main(String[] args) {
+        System.out.println("Terps are awesome!");
+    }
+}
+\end{lstlisting}
+
+How does this program work? There are three primary components to this program:
+
+\begin{enumerate}
+    \item The first line uses the keywords ``public class" to indicate that everything that follows is part of a new class that is being defined. \verb!FirstProgram! is an identifier that we use to name the class. The entire class definition is contained between an opening curly brace and a closing curly brace. 
+    \item The second component to this program is the \verb!main! method. In the Java programming language, every application is required to have a \verb!main! method, which is declared as ``\verb!public static void main(String[] args)!". We will see exactly what each of these keywords mean later on.
+    \item Finally, the last part of this program consists of the statements to be executed.  In this program, we only have one statement: \verb!System.out.println("Hello, World");! This line outputs ``Hello, World" followed by a new line on the screen. 
+\end{enumerate}
+
+Most, but not all, Java statements must end with a semicolon. 
+
+\subsection{Introduction to Variables}
+
+A \vocab{variable} is a piece of memory that can store a specified type of value. These are similar to the variables that we see in algebra class, like $x$ or $y$. In Java, there are several different \vocab{data types} of variables, for example:
+
+\begin{itemize}
+    \item The \verb!String! type stores text, like ``Hello." String values are surrounded by double quotes.
+    \item The \verb!int! type stores integers (whole numbers), like $123$ or $-123$. 
+    \item The \verb!float! type stores floating point numbers, with decimals, like $19.99$ or $-19.99$. 
+    \item The \verb!char! type stores single characters, like \verb!'a'! or \verb!'B'!. These values are surrounded by single quotes.
+    \item The \verb!boolean! type stores values with two states: either \verb!true! or \verb!false!.
+\end{itemize}
+
+\subsubsection{Integer Types}
+
+The general procedure to declare a variable in Java is to write the predefined data type (like \verb!int!, \verb!long!, or \verb!short!) followed by an identifier that we are using to refer to that piece of memory. We can subsequently assign values to the variable using a single equal sign (\verb!=!), where the value follows the equal sign. \\
+
+For example, consider the following Java program:
+
+\begin{lstlisting}
+public class FirstProgram {
+    public static void main(String[] args) {
+        int x;
+        x = 20;
+        System.out.println(x);
+    }
+}
+\end{lstlisting}
+
+
+What's happening here?
+
+\begin{itemize}
+    \item On Line $3$, we define an integer variable named \verb!x!. In computer science, the process of defining a variable like so is called a variable \vocab{declaration}. 
+    \item On Line $4$, we assign the value $20$ to our previously declared variable \verb!x!. At this point, \verb!x! becomes an alias for $20$. The process of assigning a value to a variable for its first time is called \vocab{initializing} the variable.
+    \item When we print out the contents variable \verb!x! on Line $5$, the number $20$ gets printed.
+\end{itemize}
+
+In the above example, we use \verb!x! as the identifier for our variable. However, not all words can be used as variables. Some keywords, like \verb!int!, are \vocab{reserved}, so we cannot use them ourselves (for example, we cannot initialize an \verb!int! variable called \verb!int!). The words that appear purple in Eclipse are typically reserved keywords. \\
+
+It turns out that we can actually make this code even shorter. Java allows us to declare \textit{and} initialize variables at the same time. This is shown below:
+
+\begin{lstlisting}
+public class FirstProgram {
+    public static void main(String[] args) {
+        int x = 20;
+        System.out.println(x);
+    }
+}
+\end{lstlisting}
+
+Instead of declaring the integer variable \verb!x! and assigning it $20$ on two different lines, we now declare and initialize it to be $20$ at the same time. This is equivalent to the previous example. \\
+
+Variables are also helpful since they allow us to use pre-defined data type operations. For example, Java supports various arithmetic operations for \verb!int! types, which the following example illustrates:
+
+\begin{lstlisting}
+public class FirstProgram {
+    public static void main(String args[]) {
+        int x = 20;
+        int y = 3;
+        int a;
+        a = x - y;
+        System.out.println(a);
+        a = x + y;
+        System.out.println(a);
+        a = x * y;
+        System.out.println(a);
+        a = x / y;
+        System.out.println(a);
+    }
+}
+\end{lstlisting}
+
+In the above program, we declare three \verb!int! variables: \verb!x!, \verb!y!, and \verb!a!. At first, we assign \verb!x - y! to \verb!a! and print it, which results in $17$ being printed to the screen. Following similar procedures for \verb!a = x + y! and \verb!a = x * y!, we subsequently see $23$ and $60$ get printed to the screen. Surprisingly, however, the result of assigning \verb!a = x / y! and printing \verb!a! results in $6$ getting printed to the screen, rather than, say, $6.6667$. Why? Since we are storing the results of dividing the two integers into another integer (which can only store whole numbers), everything after the decimal point gets truncated. It is important to remember that \verb!int! types can only store whole numbers. \\
+
+We can also shorten the program above by making use of the fact that Java allows us to declare variables with the same type on the same line. Thus, we can move the declarations and initialization of \verb!x!, \verb!y!, and \verb!a! onto the same line as demonstrated below:
+
+\begin{lstlisting}
+public class FirstProgram {
+    public static void main(String args[]) {
+        int x = 20, y = 3, a;
+        a = x - y;
+        System.out.println(a);
+        a = x + y;
+        System.out.println(a);
+        a = x * y;
+        System.out.println(a);
+        a = x / y;
+        System.out.println(a);
+    }
+}
+\end{lstlisting}
+
+This code is equivalent to the code that we saw previously. \\
+
+Next, we'll look at the \vocab{modulus} operation, which is defined for integer types in Java. This operation takes the form \verb!x % y!, and it returns the finds the remainder after \verb!x! is divided by \verb!y!. 
+
+\begin{example}
+[Modulus Operation]
+The following examples demonstrate how the modulus operation work:
+\begin{itemize}
+    \item The value of \verb!5 % 2! is equal to $1$ since dividing $5$ by $2$ leaves a remainder of $1$.
+    \item The value of \verb!100 % 101! is equal to $100$ since dividing $100$ by $101$ leaves a remainder of $100$. 
+\end{itemize} 
+\end{example}
+
+\begin{fact}
+If \verb!x % y! is equal to $0$, then \verb!x! is divisible by \verb!y!. 
+\end{fact}
+
+
+\subsubsection{Floating Point Variables}
+
+Previously, we introduced \verb!int! types, which are useful for storing whole numbers. However, what happens if we want to store non-integer values, like \verb!1.3! or \verb!2.5!? In this case, we can use \vocab{floating-point data types}. The two primary floating-point data types that we will be using are \verb!float! and \verb!double!. Their usage is very similar to the usage of \verb!int! types. \\
+
+Consider the following example:
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        double salary = 45000.50;
+        System.out.println(salary);
+    }
+}
+\end{lstlisting}
+
+This program compiles successfully (it executes without any errors), and it prints out \verb!45000.50!. This would not have been possible if we were only using \verb!int! data types (we wouldn't be able to store \verb!45000.50! into an \verb!int! type). 
+
+
+We can also perform arithmetic operations with floating point types, like we did with \verb!int! types.
+
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        double salary = 45000.50;
+        double newSalary = salary * 2;
+        System.out.println(newSalary);
+    }
+}
+\end{lstlisting}
+
+Now, our program prints \verb!90001.0! as we would expect.
+
+\subsubsection{Boolean Types}
+
+Java supports \verb!boolean! variables, which can only take on the values \verb!true! or \verb!false!. For example, consider the following example:
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        boolean hungry = false;
+        boolean sleepy = true;
+    }
+}
+\end{lstlisting}
+
+The program above declares two Boolean variables: \verb!hungry! and \verb!sleepy!, which are \verb!false! and \verb!true!, respectively. Why are Boolean variables important? They can be used in conditional statements, which we will introduce later on. For now, it's only important to know that Boolean variables exist. 
+
+\subsubsection{String Types}
+
+A \verb!String! in Java is a sequence of characters. For example, we can write \verb!String name = "John";! to initialize the variable \verb!name! with the contents \verb!John!. \\
+
+String types have a built-in \verb!+! operation defined for them. We can use the plus (\verb!+!) operator between two strings in order to combine their values. Instead of addition, the \verb!+! acts to \vocab{concatenate} (that is, join together) the string sequences. For example, consider the following program:
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        String s1 = "John", s2 = "Smith";
+        System.out.println(s1 + " " + s2);
+    }
+}
+\end{lstlisting}
+
+On Line $3$, we declare the variables \verb!s1! and \verb!s2! with the contents \verb!John! and \verb!Smith!, respectively. On Line $4$, \verb!John Smith! gets printed out. Note that we use the string concatenation operation twice. 
+
+\subsection{Comments}
+
+In Java, we use \vocab{comments} to indicate the programmer's intent. They do not affect the program's execution (they are ignored by the compiler), but they make your code more readable to yourself and others. 
+
+There are two types of Java comments:
+
+
+\begin{enumerate}
+    \item \vocab{In-line comments} are one-line comments. They start with \verb!//!, and they terminate as soon as the next line starts. 
+    \item \vocab{Multi-line comments} can last for multiple lines. They start with \verb!/*!, and they end with an \verb!*/!. 
+\end{enumerate}
+
+The following Java program demonstrates how both comments are used:
+
+\begin{lstlisting}
+public class Comments {
+    public static void main(String args[]) {
+        /*
+            This is a multi-line comment. 
+        */
+        
+        // This is a single-line comment.
+        
+        System.out.println("Hello!");
+    }
+}
+\end{lstlisting}
+
+This program simply prints out ``Hello!". Neither of the two comments affect the execution of the program.
+
+
+\subsection{Debugging}
+
+There are two primary types of errors that we should be familiar with:
+
+\begin{enumerate}
+    \item \vocab{Compile-time errors} are errors that are caught by Eclipse, or your Java compiler. These include \vocab{syntax errors} that violate the rules of the language (i.e. \verb!int x <- 5! is an incorrect way to assign $5$ to the variable \verb!x!). These also include \vocab{type errors}, which come from the misuse of variables.
+    \item \vocab{Run-time errors} are errors that appear during the program's execution. These include semantic errors that obey the rules of the language but do not express the meaning you intended. These can also include division-by-zero errors, or wrong outputs due to mistakes in your programming.
+\end{enumerate}
+
+Eclipse helps us identify compile-time errors: it gives us a red flag next to our program when there's an error (and our program won't execute), and it gives us a yellow flag when there's a warning (but we can still execute the program).

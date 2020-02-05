@@ -1,0 +1,153 @@
+\section{Friday, September 6, 2019}
+
+Today, we'll discuss the errors associated with uninitialized variables, constants, and compound  
+
+\subsection{Compound Assignment}
+
+In Java, we \vocab{compound-assignment operators} provide us with shorter syntax to assign the results of arithmetic operations. They perform the operation on the two operands before assigning the result to the first operand. Compound-assignment operators are formed by taking the operator and placing an equals sign immediately after it. \\
+
+For example, suppose we wanted to increment the variable \verb!x! by $10$. One way to do this would be to write \verb!x = x + 10!. However, with compound-assignment operators, we can shorthandedly write \verb!x += 10! to accomplish the same thing. Similarly, we can write \verb!x *= 10! to multiply the old value of \verb!x! by $10$ and store the new result in \verb!x!, or we can write \verb!x -= 5! to subtract $5$ from the old value of \verb!x! and store the new result in \verb!x!. \\
+
+Note that compound-assignment operators are not limited to numeric types. Thus, if we have two strings \verb!s1! and \verb!s2!, it would be perfectly fine to write \verb!s1 += s2! to set \verb!s1! to the concatenation of the old value of \verb!s1! with the contents of \verb!s2!. 
+
+\subsection{Uninitialized Variables}
+
+Let's look at the following code segment:
+
+\begin{lstlisting}
+import java.util.Scanner;
+
+public class Initialization1 {
+
+	public static void main(String[] args) {
+		int x;
+		
+		Scanner scanner = new Scanner(System.in);
+		String s = scanner.next();
+
+		if (s.equals("dog")) {
+			x = 10;
+		}
+		System.out.println("x is " + x);
+		
+		scanner.close();
+	}
+}
+\end{lstlisting}
+
+As we've already seen, Line $6$ declares a variable \verb!x!. However, what would happen if we tried to print the variable \verb!x! without initializing it? Surprisingly, we get an error, and our code does not compile. \\
+
+Due to similar reasons, the code provided above as is does not compile either. Why? Because the value of \verb!x! is \textit{only} assigned a value if the user inputs \verb!dog!. What happens if the user inputs \verb!cat!? Then the conditional statement on Line $12$ does not get executed, and \verb!x! is left uninitialized. Subsequently, we try to print \verb!x! on line $14$; however, this results in an error due to reasons described previously. \\
+
+
+Here's another example of code that does not compile:
+
+\begin{lstlisting}
+import java.util.Scanner;
+
+public class Initialization3 {
+
+	public static void main(String[] args) {
+		int x;
+		boolean foundDog = false;   // this is an example of a "flag"
+		Scanner scanner = new Scanner(System.in);
+		String s = scanner.next();
+
+		if (s.equals("dog")) {
+			x = 10;
+			foundDog = true;
+		}
+
+		if (!foundDog) {
+			x = 12;
+		}
+		
+		System.out.println("x is " + x);
+		scanner.close();
+	}
+}
+\end{lstlisting}
+
+In this code, if the user inputs \verb!dog!, then the value of \verb!x! ends up being $10$. On the other hand, if the user \textit{doesn't} input \verb!dog!, then the value of \verb!x! ends up being $12$. Thus, no matter what the execution path is, the variable \verb!x! always ends up with a value. However, this program still does not compile since, at compile-time, it is not clear that the variable \verb!x! will eventually take on a value. 
+
+\subsection{Constants}
+
+we can use the \vocab{final} keyword to define variables whose value cannot change once it has been assigned. Such a variable is typically called a \vocab{constant}. Constants are useful since they can make your program more easily read and understood by others. By convention, we typically make the names of constant variables in all uppercase letters.  \\
+
+
+Here's an example of constants in use: \\
+
+\begin{lstlisting}
+public class Example1 {
+    public static void main(String args[]) {
+        final double PI = 3.14;
+        // This line doesn't compile:
+        // PI = 4;
+    }
+}
+\end{lstlisting}
+
+In the above code segment, we declare a final variable \verb!PI!, which takes on the value $3.14$. Note that the \verb!final! keyword comes before the type of the variable (i.e. \verb!final! comes before \verb!double! here). Since the variable is a constant, it would be an error to try and change this variable. Thus, the commented line \verb!PI = 4! would raise a compile-time error if it were uncommented. 
+
+
+\subsection{While Loops}
+
+In computer programming, a \vocab{loop} defines a sequence of instructions to be continually repeated until a certain condition is reached. Loops are helpful since we sometimes want to perform an action several times (and using a loop reduces the amount of code we need to write), or we sometimes want to perform an action until some presently unknown condition holds. \\
+
+Java supports a few types of loops. The first one that we will cover is the \vocab{while loop}, which has the following general form:
+
+\begin{lstlisting}
+while (condition) {
+    statements;
+}
+\end{lstlisting}
+
+At the start of the while-loop, we check whether \verb!condition! is true. If so, then we execute everything in the loop block, and we go back to the top of the loop. Otherwise, we skip all of the statements that would have been executed, and we continue executing statements outside of the while-loop. \\
+
+
+Here is an illustrative example of the while-loop in use:
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        int i, limit = 3;
+        i = 1;
+        while (i <= limit) {
+            System.out.println(i);
+            i += 2;
+        }
+    }
+}
+\end{lstlisting}
+
+What does this code do?
+
+\begin{itemize}
+    \item First, we declare an integer variable \verb!i! to be $1$, and we declare an integer \verb!limit! variable to be $3$.
+    \item Next, we reach Line $5$. Since the condition \verb!i <= limit! holds ($1$ is less than or equal to $3$), we enter the while loop, and we execute all of the statements inside of the while loop.
+    \item Inside of the while loop, we print out the current value of \verb!i!, which happens to be $1$. Subsequently, we increment the variable \verb!i! by $2$, and we go back to the top of the while condition. 
+    \item Once again, we check whether the condition \verb!i <= limit! holds. This condition holds again (since $3$ is less than or equal to $3$), so we print \verb!3!, increment \verb!i! by $2$ (so \verb!i! is now $5$), and go back up to the top of the while-loop.
+    \item At this point, the condition \verb!i <= limit! evaluates to false. Thus, we do not execute the statements inside of the while-loop for a third time, and our program is complete.
+\end{itemize}
+
+
+It is important to be careful of \vocab{infinite loops}. These are loops that never terminate. If we were to remove the \verb!i += 2! statement inside of our while-loop in the program above, we would have an example of an infinite loop (the condition \verb!i <= limit! will never become true). \\
+
+
+Suppose we want to print all even numbers between $1$ and $100$. We can do this very easily now with the help of a loop:
+
+\begin{lstlisting}
+public class Example2 {
+    public static void main(String args[]) {
+        int i = 1, limit = 100;
+        while (i <= limit) {
+            if (i % 2 == 0) {
+                System.out.println(i);
+            }
+            i++; /* This is new. */
+        }
+    }
+}
+\end{lstlisting}
+
+In this program, we loop from $1$ up to $100$. On each iteration of the loop, we check if \verb!i! is divisible by $2$. If so, we print \verb!i!. Otherwise, we do nothing. Note that instead of writing \verb!i = i + 1! or \verb!i += 1! as we might be used to, we can instead write \verb!i++!. The expression \verb!i++! increments \verb!i! by one and returns the old value of \verb!i!. This is known as \vocab{post-incrementation}. On the other hand, \verb!++i! increments \verb!i! by one and returns the new value of \verb!i!. This is known as \vocab{pre-incrementation}.

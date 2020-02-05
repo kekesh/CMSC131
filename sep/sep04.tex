@@ -1,0 +1,66 @@
+\newpage
+\section{Wednesday, September 4, 2019}
+
+Last time, we introduced logical operators which allow us to create compound Boolean expressions. Today, we'll look at some more instances in which such Boolean expressions can be useful.
+
+\subsection{More on Conditionals}
+
+We've already seen if-statements and if-else statements. Java also supports else-if statements to check if one of many conditions are true. The general syntax for such a statement is 
+\[ 
+\verb!if (condition1) { code } else if (condition2) { code } else { code }!.
+\]
+
+Note that we can have arbitrarily many \verb!else if! statements. In an else-if statement, only one code block gets executed. Once a single condition evaluates to ``true," we evaluate the corresponding code block and skip all other code blocks (even though more than one condition might evaluate to true). \\
+
+Here's an example in which such a conditional statement can be helpful: \\
+
+\begin{lstlisting}
+import java.util.Scanner;
+public class Example5 {
+    public static void main(String args[]) {
+        String name;
+        String scanner = new Scanner(System.in);
+        System.out.print("Enter firstname: ");
+        name = scanner.next();
+        if (name.equals("Mary")) {
+            System.out.println("bff");
+        } else if (name.equals("Peter")) {
+            System.out.println("wff");
+        } else ikf (name.equals("Rose")) {
+            System.out.println("classmate");
+        } else {
+            System.out.println("Do not recognize.");
+        }
+    }
+    scanner.close();
+}
+\end{lstlisting}
+
+In this program, the user provides a name. Subsequently, we compare the name to \verb!Mary!. If the name is equal to \verb!Mary!, then we print \verb!bff!. Otherwise, we compare against \verb!Peter!, and so on. If the name does not match with \verb!Mary!, \very!Peter!, or \verb!Rose!, then we print out \verb!Do not recognize.! \\
+
+A better way to write the code above would be to use a variable to store the final string that we are printing. This is demonstrated by the example below:
+
+\begin{lstlisting}
+import java.util.Scanner;
+public class Example5 {
+    public static void main(String args[]) {
+        String name, ans;
+        String scanner = new Scanner(System.in);
+        System.out.print("Enter firstname: ");
+        name = scanner.next();
+        if (name.equals("Mary")) {
+            ans = "bff";
+        } else if (name.equals("Peter")) {
+            ans = "wff";
+        } else ikf (name.equals("Rose")) {
+            ans = "classmate";
+        } else {
+            ans = "Do not recognize.";
+        }
+        System.out.println(ans);
+    }
+    scanner.close();
+}
+\end{lstlisting}
+
+Note that the program now introduces another string variable named \verb!ans!. This variable stores the contents of what we want to print until we've finished the if-else statements. Finally, we print the answer, which is guaranteed to have a value, after the if-else statements. Why is this better than the previous version? Mainly because it becomes a lot easier to add more conditions to our code in the future. It is also a lot easier to read what the results of each conditions are. 

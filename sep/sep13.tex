@@ -1,0 +1,186 @@
+\section{Friday, September 13, 2019}
+
+Today, we'll continue talking about nested loops.
+
+
+\subsection{Scope Error}
+
+In a previous lecture, we talked about how variables are only valid in the scope in which they are defined. Today, we'll briefly look at an example that might seem correct but is actually invalid for that exact reason:
+
+\begin{lstlisting}
+import java.util.Scanner;
+public class ScopeError {
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+        do {
+            System.out.print("Enter an integer from 1 to 10: ");
+            int answer = scanner.nextInt();
+        } while (answer < 1 || answer > 10);
+    System.out.println("Good job");
+    scanner.close();
+    }
+}
+\end{lstlisting}
+
+We want this program to read in an integer between $1$ and $10$, inclusive. The program should keep on prompting the user to enter an integer between $1$ and $10$ until valid input is provided. However, the program as shown above does not compile. Why? Because the while-loop's terminating condition on Line $8$ depends on the variable \verb!answer! which is only defined inside of the scope of the while-loop. The variable must be visible in the expression in which it is being used. In order to fix this, we can declare \verb!answer! outside of the \verb!do { ... }! block, and we can just update its value (instead of declaring the variable) on Line $7$. 
+
+\subsection{Expressions}
+
+Now that we are more familiar with the Java programming language, we will now mention what an \vocab{expression} is. In Java, an expression is any statement that produces a value. For example, the variable \verb!x! by itself is a value (it can be evaluated to whatever contents \verb!x! is storing). Similarly, \verb!x + 1 - y! and \verb!x == y && z == 0! are both expressions (the former expression evaluates to a numeric type, whereas the latter expression evaluates to a Boolean type). \\
+
+Expressions have values of a specific type (e.g. \verb!int, boolean!, etc). They can be assigned to variables, appear inside of other expressions, and so on. A statement that \textit{doesn't} evaluate to a value is \textbf{not} an expression. \\
+
+
+Consider the following code segment:
+
+\begin{lstlisting}
+public class Example3 {
+    public static void main(String args[]) {
+        int x = 20, y;
+        x = 1;
+        y = (x = 10) + 3; /* This may seem strange. */
+    }
+}
+\end{lstlisting}
+
+It might seem strange to be able to to assign \verb!y! the expression \verb!(x = 10) + 3!. However, this is valid. The reason why this is valid is because the right-hand side of the equals sign can be evaluated to an \verb!int! type that we can assign to \verb!y!. This happens because the assignment operator \verb!=! assigns the value on the right-hand side of the equality to the variable on the left-hand side of the equality, and it subsequently assigns the entire expression the newly assigned value. \\
+
+Thus, the expression \verb!y = (x = 10) + 3! is evaluated as follows:
+
+\begin{itemize}
+    \item Firstly, we assign $10$ to the variable \verb!x!. 
+    \item Next, we assign the value $10$ to the entire expression \verb!(x = 10)!.
+    \item Next, we evaluate the right-hand side of the equality \verb!y = (x = 10) + 3!. This expression evaluates to $13$. 
+    \item Finally, we assign the evaluated expression to the variable \verb!y!. At this point, the variable \verb!y! stores the value $13$. 
+\end{itemize}
+
+The resulting value of \verb!x! is $10$, and the resulting value of \verb!y! is $13$. \\
+
+
+While it's hard to read code written like this, this example illustrates how Java evaluates expressions. \\
+
+Here's another example:
+
+\begin{lstlisting}
+public class Example3 {
+    public static void main(String args[]) {
+        int m = 1, x;
+        x = m++;
+        System.out.println(x);
+        System.out.println(m);
+    }
+}
+\end{lstlisting}
+
+Recall that \verb!m++! increments the value of \verb!m! and returns the old value of \verb!m!. Here's what's happening in the code above:
+
+\begin{itemize}
+    \item Firstly, we assign the value $1$ to the variable \verb!m!.
+    \item Next, we set the value of \verb!m++! to the variable \verb!x!. While doing so, we increment the value of \verb!m!, and the expression \verb!m++! returns the old value of \verb!m! (which was $1$). Thus, the variable \verb!x! is assigned \verb!1!.
+    \item When we print the two variables, we find that \verb!x! is equal to $1$ and \verb!m! is equal to $2$. Note that $m$'s value has increased due to the post-incrementation that took place.  
+\end{itemize}
+
+On the other hand, if we were to change Line $4$ from \verb!x = m++! to \verb!x = ++m!, the variable \verb!x! would store the value \verb!2! instead of \verb!1! (the preincrementation would return the new value of \verb!m! instead of the old value). 
+
+
+\subsection{Introduction to Methods}
+
+A \vocab{method} is a set of code that is grouped together and referred to by a name that can be called (\vocab{invoked}) at any point in a program by simply utilizing the method's name. Methods are defined inside of classes, and they are useful since they allow us to reuse portions of code without having to retype the code. So far, we've been using the \verb!main! method, but now we want to create our own methods. \\
+
+There are two types of methods that we'll talk about: 
+
+\begin{itemize}
+    \item \vocab{Static methods} are methods that can be called without an object. We just write the name of the class, followed by a period, followed by the name of the method. 
+    \item \vocab{Non-static methods} are methods that require an object. For example, when we want to use the Scanner's methods, we first instantiate a Scanner with the \verb!new! keyword. 
+\end{itemize}
+
+In order to declare a method, we must first write a method header, which takes the following form:
+\[
+\verb![method visiblity] [static] [return type] [method name](args) { ... }!
+\]
+
+The ``method visibility" portion of the method header can be either \verb!public! or \verb!private!, depending on where we want our method to be accessible from. For now, we set this to \verb!public!. Next, we can optionally include the keyword \verb!static! to indicate that our method is a static method. Next, we'll add the return type of the method (if the method doesn't return anything, this should be \verb!void!). Finally, we need to give the method a name and specify what arguments it takes in, if any. \\
+
+
+Here's an example:
+
+\begin{lstlisting}
+public class Rectangle {
+    public static void printRectangle() {
+        int row, int col, int maxRows = 3, maxCols = 4;
+        
+        for (row = 1; row <= maxRows; row++) {
+            for (col = 1; col <= maxCols; col++) {
+                if (col % 2 == 0) {
+                    System.out.print("*");
+                } else {
+                    System.out.print("$");
+                }
+            }
+            System.out.println();
+        }
+    }
+    
+    public static void main(String args[]) {
+        Rectangle.printRectangle(); // Method call.
+    }
+}
+\end{lstlisting}
+
+Note how we've defined a method called \verb!printRectangle!. Now, whenever we want to draw our rectangle, we can just call \verb!Rectangle.printRectangle()!. This is much more convenient than reusing the same code over-and-over again. \\
+
+Can we do better? Yes. We can customize our method even more by adding \vocab{parameters} that allow our user to specify the dimensions of the rectangle being printed. This is done by changing the code from above to what is shown below:
+
+
+\begin{lstlisting}
+public class Rectangle {
+    public static void printRectangle(int maxRows, int maxCols) {
+        int row, int col;
+        
+        for (row = 1; row <= maxRows; row++) {
+            for (col = 1; col <= maxCols; col++) {
+                if (col % 2 == 0) {
+                    System.out.print("*");
+                } else {
+                    System.out.print("$");
+                }
+            }
+            System.out.println();
+        }
+    }
+    
+    public static void main(String args[]) {
+        Rectangle.printRectangle(3, 4); // Method call.
+    }
+}
+\end{lstlisting}
+
+
+Now, when we call our method, we must specify the maximum number of rows and the maximum number of columns. This allows us to easily draw rectangles with different dimensions without having to write more code. For example, calling \verb!Rectangle.printRectangle(3, 4)! results in a $3\times 4$ rectangle, whereas \verb!Rectangle.printRectangle(5, 5)! would print a $5\times 5$ rectangle.  \\
+
+This method can further be customized by providing the symbols we're printing as parameters.
+
+
+
+
+\iffalse
+\subsection{More on Nested Loops}
+
+Previously, we saw how we can use nested for-loops to draw designs. We ended last lecture with an example that prints out a triangle. However, the triangle was left-adjusted. How can we make the triangle centered?
+
+
+This problem can still be solved with a nested for-loop. However, the key observation is that the number of spaces is equal the maximum number of columns minus the current row number:
+
+
+
+
+
+\begin{lstlisting}
+public class Triangle2 {
+    public static void main(String args[]) {
+        
+    }
+
+}
+\end{lstlisting}
+\fi

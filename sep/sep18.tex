@@ -1,0 +1,59 @@
+\section{Wednesday, September 18, 2019}
+
+\subsection{Casting Numeric Types}
+
+In Java, we can perform \vocab{casting} to make a variable of one type to behave as a variable of another type. In order to cast a value or a variable, we can place the type that we wish to cast to in parentheses next to the value or variable that we are casting. \\
+
+
+Recall that an assignment like \verb!int x = 7.2! is invalid and will result in a compile-time error. This results in an error because \verb!7.2! is a floating-point value, and we are trying to assign it to an integer variable. We can fix this issue by casting. Writing \verb!int x = (int) 7.2! tells the Java compiler to treat \verb!7.2! as an integer type (so everything after the decimal point gets truncated) and assign the resulting value to \verb!x!. After this statement is executed, \verb!x! will store the value $7$. \\
+
+
+Here's some code that makes what we just discussed more clear:
+
+\begin{lstlisting}
+import java.util.Scanner;
+
+public class ShortCircuiting {
+    public static void main(String args[]) {
+        double y = 7.2;
+        int x = (int) y; // this doesn't give an error!
+        System.out.println(y); // prints 7.2
+        System.out.println(x); // prints 7.
+    }
+}
+\end{lstlisting}
+
+Note that casting the variable \verb!y!, which stores the value $7.2$, does not change the value of \verb!y!. \\
+
+When we're adding integers with floats, (e.g. \verb!x += y!, where \verb!y! is an integer and \verb!x! is a float), Java performs implicit casts as necessary. 
+
+\subsection{Floating-Point Calculations}
+
+In computers, there are some values that cannot be represented exactly. This issue isn't specific to Java --- there are no computers that can represent real numbers exactly. For example, consider the fraction $1/3 \approx 0.333$. This number has an infinitely long decimal representation. But since we have finite space, this leads to complications when we're storing these numbers. Ultimately, some of these bits must get cut off, which can cause some small imprecisions when dealing with floating-point values. \\
+
+Since many floating-point calculations involve approximations rather than exact results, it is usually \textit{unreasonable} to test the result of a floating-point calculation for equality with another value. Instead, we typically define some small constant \verb!EPSILON!, and we say that two values are equal if they are within \verb!EPSILON! absolute distance of each other. \\
+
+Here's an example:
+
+\begin{lstlisting}
+public class FloatingCalculations {
+    private final static double EPSILON = 0.0000000001; 
+    
+    public static void main(String args[]) {
+        double difference = 3.9 - 3.8;
+        System.out.println("3.9 - 3.8 = " + difference);
+        if ((Math.abs(difference) - 0.10) < EPSILON) {
+            System.out.println("Not exactly 0.10, but we will accept it.");
+        } else {
+            System.out.println("They are different.");
+        }
+    }
+}
+\end{lstlisting}
+
+\noindent In the program above, we want to check whether the difference between $3.9$ and $3.8$ is equal to $0.10$. When we print the variable \verb!difference!, it turns out that we get a value that's different from $0.10$. This is a result of floating-point imprecision. However, the conditional on Line $7$ holds true (the difference is within $0.0000000001$ of $0.1$), so we end up printing \verb!Not exactly 0.10, but we will accept it.!
+
+Some more details regarding floating-point imprecision are provided here: \url{https://floating-point-gui.de/}. 
+
+
+% \subsection{Memory}

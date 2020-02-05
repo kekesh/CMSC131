@@ -1,0 +1,257 @@
+\newpage
+\section{Friday, August 30, 2019}
+
+Last time, we introduced different data types and some of the operations they support. Today, we'll mostly expand on strings. 
+
+
+\subsection{Immutability of Strings}
+
+Before starting a more in-depth discussion of strings, it is important to keep in mind that strings in Java are \vocab{immutable}. This means that we cannot change the contents of a string in Java. While it might seem like we're adding on to the end of a string when we're performing string concatenation, this is actually not the case; we are actually creating a new string, and we are combining the two old strings into a new string. 
+
+
+\subsection{String Concatenation}
+
+In the previous lecture, we briefly mentioned that the \verb!+! operator performs addition for integers and floating-point types, but it performs concatenation when working with strings. For example, if we concatenate \verb!von! with \verb!Wienerschnitzel!, we end up with \verb!vonWienerschnitzel!. Note that string concatenation does not automatically add a space character between the strings being concatenated. \\
+
+When a string is concatenated with a non-string type, the other type is first evaluated and converted into its string representation. For example, if we were to write \verb!(8 * 4) + "degrees"!, then we'd end up with \verb!32degrees!. Likewise, writing \verb!(1 + 2) + "5"! would result in \verb!35!. 
+
+
+This conversion process is also shown through the following code segment:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        System.out.println("Eight times four is: " + 8 * 4);
+    }
+}
+\end{lstlisting}
+
+The statement that gets printed is \verb!Eight times four is 32!. Note how the integer expression \verb!8 * 4! is evaluated and subsequently converted to a string. 
+
+
+\subsection{String Comparison}
+
+In Java, we can compare numeric values using the \verb!==, <, <=, >, >=,! or \verb@!=@ operators. For example, the expression \verb!1 == 1! would return true, whereas the expression \verb!2 < 1! would return false. However, strings should not be compared using these operators. \\
+
+Instead, there are built-in functions that allow us to check whether two strings are equal. If we have a string \verb!s!, and we want to check whether its contents are equal to another string \verb!t!, we can check whether \verb!s.equals(t)! is true. There's also a \verb!.compareTo()! function that compares two strings lexicographically (whichever string would appear first in a dictionary is ``greater" than the other string). If we call \verb!s.compareTo(t)! and \verb!s! is less than \verb!t!, then a negative value is returned. If the contents of \verb!s! is equal to \verb!t!, then $0$ is returned. Otherwise, a positive value is returned. \\
+
+
+Another useful method is \verb!.length()!, which returns the number of characters in the string that the method is invoked on. \\
+
+Consider the following example:
+
+\begin{lstlisting}
+public class StringComparison1 {
+    public static void main(String args[]) {
+        String katniss = "Katniss";
+        String peeta = "Peeta";
+        String katniss2 = "Katniss";
+        
+        System.out.println(katniss.compareTo(peeta));
+        System.out.println(peeta.compareTo(katniss));
+        System.out.println(katniss.compareTo(katniss2));
+        
+        /* This is how you compare for equality. Do NOT compare using == */
+        System.out.println(katniss.equals(katniss2));
+    }
+}
+\end{lstlisting}
+
+On Lines $3$, $4$, and $5$, we declare and initialize three \verb!String! variables. Both \verb!katniss! and \verb!katniss2! store the contents \verb!Katniss!, whereas \verb!peeta! stores the contents \verb!Peeta!. \\
+
+On Lines $7, 8,$ and $9$, we print the results of various comparison operations:
+
+\begin{itemize}
+    \item The print statement on Line $7$ prints a negative number (it doesn't matter what the number actually is) since \verb!Katniss! is lexicographically smaller than \verb!Peeta! (this means that \verb!Katniss! would appear before \verb!Peeta! in an alphabetically sorted list). 
+    \item The print statement on Line $8$ prints a positive number (again, it doesn't matter what the number actually is) since \verb!Peeta! is lexicographically larger than \verb!Katniss!. 
+    \item Finally, the print statement on Line $9$ will print $0$ since \verb!Katniss! is lexicographically equal to \verb!Katniss!. 
+\end{itemize}
+
+On Line $12$, we print the result of an equality check among two equal strings. Consequently, \verb!true! gets printed. It is important to note that we use \verb!.equals()! to compare two strings rather than a double-equal sign. \\
+
+
+Here's another example involving string comparisons in which we illustrate why it's important to avoid using \verb!==!  and other comparison operators.
+
+\begin{lstlisting}
+public class StringComparison2 {
+    public static void main(String args[]) {
+        String katniss = "Katniss";
+        String katniss2 = "Katniss";
+        
+        /* Another approach to create strings. */
+        String mockingjay = new String("Katniss");
+        
+        
+        /* This is the wrong way to compare strings. Use .equals() instead. */
+        System.out.println(katniss == katniss2);
+        
+        /* This is the wrong way to compare strings. Use .equals() instead. */
+        System.out.println(katniss == mockingjay)
+        
+    }
+    
+}
+\end{lstlisting}
+
+Firstly, we define two \verb!String! variables named \verb!katniss! and \verb!katniss2!. Both of these store the contents \verb!Katniss!. Next, we declare another \verb!String! variable named \verb!mockingjay! that also stores the contents \verb!Katniss!. Note, however, that the way in which we initialized this variable differs from what we've seen so far. For now, we  can view this method of declaring and initializing a string as an equivalent alternative to the way that we have been using. \\
+
+The first print statement prints \verb!true!, which agrees with what we would expect; however, the second print statement surprisingly prints \verb!false!. While we won't go into the details as to why this happens yet, this example illustrates the importance of using the \verb!.equals()! method over the \verb!==! comparison operator.
+
+
+
+
+\subsection{Introduction to Scanners}
+
+In our programs so far, we've been able to provide our users with output by using \verb!System.out.println(..)! statements. However, it's also useful to be able to receive and process user input. One way that this can be done in Java is through the use of a \vocab{Scanner}. Scanners are built-in classes provided in the \verb!util! package that allow us to easily obtain the input of various data types. In order to have access to the \verb!Scanner!, we must add the line \verb!import java.util.Scanner;! at the top of our program. \\
+
+We can subsequently declare a Scanner named \verb!scan! with the line 
+\[
+\verb!Scanner scan = new Scanner(System.in);!
+\]
+
+The \verb!System.in! that we mention in our initialization of our scanner represents the keyboard.
+
+The following program puts everything together:
+
+\begin{lstlisting}
+import java.util.Scanner; // This lets us use scanners. 
+
+public class Example3 {
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+           
+    }
+}
+\end{lstlisting}
+
+Scanners are useful since they let us interact with the user. For example, if we declare an integer variable named \verb!age!, and we set it equal to \verb!scan.nextInt()!, the variable \verb!age! will be set equal to the next integer that the user enters. This is shown through the following program:
+
+\begin{lstlisting}
+import java.util.Scanner; // This lets us use scanners. 
+
+public class Example3 {
+    public static void main(String args[]) {
+        int age;
+        Scanner scan = new Scanner(System.in);
+        age = scan.nextInt();
+        System.out.println("Age is " + age);
+        scanner.close();
+    }
+}
+\end{lstlisting}
+This program takes in an integer from the programmer (through the console provided by Eclipse), and it subsequently prints \verb!Age is [age]!, where \verb![age]! is the integer provided by the user. Finally, we close the scanner by writing \verb!scanner.close()!, which indicates that we do not want the programmer to be able to provide any more input. \\
+
+
+Here's another example:
+
+\begin{lstlisting}
+import java.util.Scanner;
+
+/** 
+ * Shows basic use of scanner
+ */
+public class Scanner1 { 
+ public static void main(String args[]) {
+    Scanner keyboardInput = new Scanner(System.in);
+    int first, second;
+    /* Note the use of System.out.print() rather than System.out.println() */
+    System.out.print("Enter an integer value: ");
+    
+    first = keyboardInput.nextInt();
+    
+    System.out.print("Enter another integer value: ");
+    second = keyboardInput.nextInt();
+    
+    System.out.println("The first number you typed was " + first);
+    System.out.println("The second number you typed was " + second);
+    
+    System.out.println("Their sum is " + first + second);
+    System.out.println("Their product is " + first * second);
+    
+    keyboardInput.close();
+ }
+}
+\end{lstlisting}
+
+This program waits for the user to provide two values. It subsequently tells the user what the two values they provided were, and it finally prints the sum and the product of the two numbers provided. Note that we use \verb!System.out.print()! instead of \verb!System.out.println()! on lines $11$ and $15$ when we're prompting the user to enter a value so that the prompt is on the same line as where the user inputs their value (the \verb!System.out.println()! prints everything we want to print followed by a new line; \verb!System.out.print()! does not print a new line). \\  
+
+
+Once again, it is important to close the scanner once we're done with it. This is done in the program above on Line $24$. \\
+
+
+Here are some more useful tips to keep in mind when using scanners: 
+
+\begin{itemize}
+    \item When reading values, scanners will ignore whitespace by default. This means that, in the program above, we can enter any number of leading spaces before our integer, and our program will still work in the same way.
+    \item Scanners cannot deal with incorrect input by default. This means that, in the program above, if we provide a \verb!String! type (e.g. by typing "hello") instead of an \verb!int! type, our program will crash. There are ways that we can handle incorrect input, but we will not worry about it for now. 
+    \item Some other operations that scanners support (but we didn't explicitly talk about) are \verb!nextBoolean()!, \verb!nextByte()!, \verb!nextDouble()!, \verb!nextFloat()!, \verb!nextLine()!, and \verb!nextLong()!. However, even this is not an exhuastive list.
+\end{itemize}
+
+
+\subsection{Conditional Statements}
+
+In Java, statements are typically executed from the top to the bottom. However, we can use \vocab{conditional statements} that execute statements only when a certain condition is true in order to modify the control flow. \\
+
+One way in which this can be done is through the use of ``if-statements,"  which have the general form \verb!if (condition) { statements; }!. The compiler checks whether the \verb!condition! evaluates to true. If so, everything enclosed in curly brackets after the if-statement is executed. Here's an example of if-statements in use:
+
+
+\begin{lstlisting}
+public class SimpleIf {
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter an integer: ");
+        int value = scanner.nextInt();
+        if (value < 0) {
+            System.out.println("That was a negative number!");
+        }
+        
+        System.out.println("The number was " + value);
+        scan.close();
+    }
+}
+\end{lstlisting}
+
+This program reads in an integer into the variable \verb!value! using user input. We subsequently use an if-statement to check whether the value inputted is negative. If the value is negative, then we print ``That was a negative number!". Otherwise, we don't print this statement. In either case, we always execute the print statement on Line $10$, and we always close the scanner afterwards.\\
+
+
+Java also supports if-else statements, which allow us to include a second block of code that is only executed if the condition provided in the if-statement evaluates to false. Here's an example of an if-else statement in use:
+
+
+\begin{lstlisting}
+public class SimpleIf {
+    public static void main(String args[]) {
+        Scanner scan = new Scanner(System.in);
+        System.out.print("Enter an integer: ");
+        int value = scanner.nextInt();
+        if (value < 0) {
+            System.out.println("That was a negative number!");
+        } else {
+            System.out.println("That was a positive number!");
+        }
+        
+        System.out.println("The number was " + value);
+        scan.close();
+    }
+}
+\end{lstlisting}
+
+This program is very similar to the one we just saw; however, we've now added an \verb!else! block. Now, when the user enters a positive number, we print out \verb@That was a positive number!@.
+
+\subsection{Logical Operators}
+
+We just saw how to use if-statements and if-else statements to form more complicated programs. We can also use \vocab{logical operators} to form more complex conditions to our conditional statements. 
+
+\begin{enumerate}
+    \item In Java, the logical \verb!AND! operator is accessed by using two ampersands, like \verb!&&!. We can use this in an if-statement or an if-else statement when we want more than one condition to be true. For instance, we might write something like,
+    \[
+    \verb!if (temp >= 97 && temp <= 99) { System.out.println("Patient is healthy"); }!
+    \]
+    to check whether a patient's body temperature is in a healthy range.
+    \item The second logical operator we will cover is the logical \verb!OR! operator, which is accessed in Java with two vertical bars, like \verb!||!. We can use this logical operator when we want at least one of many conditions to be true. For example, we might write,
+    \[
+    \verb!if (grade == "F" || grade == "D) { System.out.println("Ineligible."); } !
+    \]
+    to check whether a student is eligible for a course. 
+    \item The logical \verb!NOT! operator acts on a condition, and it checks whether a condition is false. For example, if we want to check whether the variable \verb!x! is greater than $5$, we can equivalently check whether $x$ is \textit{not} less than or equal to $5$. Thus, we could write \verb@if (!(x <= 5))@ instead of \verb@if (x > 5)@. 
+\end{enumerate}
+

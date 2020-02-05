@@ -1,0 +1,84 @@
+\section{Monday, September 9, 2019}
+
+Last time, we introduced while-loops. Today, we'll introduce do-while loops, and the scope of variables.
+
+
+\iffalse
+\subsection{Random Numbers}
+\fi
+
+\subsection{Do-While Loops}
+
+The second type of loop that we'll cover is called the \vocab{do-while loop}. The do-while loop is very similar to the while-loop; however, the key difference is that the do-while loop always executes its body at least once. This happens because the condition that checks whether we should perform the next iteration happens at the end of the loop. 
+
+Here's an example of the do-while loop in action:
+
+\begin{lstlisting}
+public class SimpleDoWhile {
+    public static void main(String args[]) {
+        int currValue = 1;
+        do {
+            System.out.println(currValue + " ");
+            currValue = currValue + 1;
+        } while (currValue <= 5);
+        System.out.println("currValue after the loop is " + currValue);
+    }
+}
+\end{lstlisting}
+
+\begin{itemize}
+    \item At first, we declare a variable \verb!currValue!, which we initialize to $1$. 
+    \item The \verb!do-while! loop gets executed until \verb!currValue > 5! happens \textit{at the end of the loop}. This means that we print out $1, 2, 3, 4, 5,$ and $6$ inside of the loop. 
+    \item The print statement on Line $8$ indicates that the value of \verb!currValue! after the do-while loop is \verb!6!. 
+\end{itemize}
+
+
+
+Here's another example where do-while loops are useful: 
+
+
+\begin{lstlisting}
+public class AskAge {
+    public static void main(String args[]) {
+        int age;
+        Scanner scan = new Scanner(System.in);
+        
+        do {
+            System.out.print("Enter age: ");
+            age = scanner.nextInt();
+            if (age < 0) {
+                System.out.println("Invalid value!");
+            }
+        } while (age < 0);
+    }
+}
+\end{lstlisting}
+
+In this example, we declare a variable \verb!age!, and we scan the user's input for a value of \verb!age! inside of a do-while loop. This lets us keep on reading values from the user's input until we receive a positive value for the age. By using a do-while loop, we're able to keep on reading input until some condition (a positive number is provided) is satisfied. Note how providing a negative number for \verb!age! will make the contents of the loop execute again, whereas providing a positive number for \verb!age! will take us out of the loop. Note that a do-while loop is preferred over a while-loop here since we always want to prompt the user to enter their age at least once. \\
+
+
+\subsection{Variables, Blocks, and Scopes}
+
+Variables can be declared anywhere in a Java program. So far, we've only really seen them declared at the top of the \verb!main! function. When are the declarations active? Right after they are executed, and only inside of the block in which they are declared. \\
+
+There are a set of \vocab{scope rules} that formalize which variable declarations are active and when. 
+
+\begin{itemize}
+    \item \vocab{Global variables} can be accessed from anywhere in a program. We haven't seen these yet. 
+    \item \vocab{Local variables} are variables whose scope is a block. If we declare a variable at the top of the main method, then that variable goes ``out-of-scope" (and hence cannot be used) outside of the main method. Similarly, if we declare a variable inside of the curly brackets of a while-loop, this variable would be inaccessible outside of the closing curly bracket of the while-loop. 
+\end{itemize}
+
+Here's a program that makes makes the second bullet point more clear:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        int i = 1;
+        while (i <= 5) {
+            int x = 2;
+            i++;
+        }
+        /* x cannot be accessed out here. */
+    }
+}
+\end{lstlisting}
