@@ -1,152 +1,208 @@
 \section{Monday, September 23, 2019}
 
-\subsection{Lambda Expressions}
-Suppose we have the following interface that provides us with the prototype of a \verb!compute! function:
+Today, we'll talk about some more details about returning values from a method, which may have not been mentioned before.
+
+\subsection{Pass By Value}
+
+First, we'll talk about some important details regarding using passed in variables in a method.
+
+
+Consider the following code segment:
 
 \begin{lstlisting}
-package lambda;
-
-public interface Task {
-	public int compute(int x);
+public void task(int x) {
+    x = x + 1;
+}
+public static void main(String args[]) {
+    int y = 5;
+    task(y);
+    System.out.println(y);
 }
 \end{lstlisting}
 
-One way to use this interface would be to implement it, which would make the compiler force the class to provide a declaration of the function \verb!compute!. This is a great idea if we're planning to create many instances of the class, but what if we only plan to instantiate this class once? As we've learned, we can solve this problem with anonymous classes. An alternative way to solve this problem is with \vocab{lambda expressions}, which permit us to write anonymous functions in a simpler way.  This means that lambda expressions aren't  ``necessary" in the sense that there isn't something that can only be done with lambda expressions, but they can be very convenient to use.
+\begin{enumerate}
+    \item In our main method, we initialize a variable \verb!y!, and we set it to the integer $5$. 
+    \item Next, we call \verb!task! which simply increments its parameter. 
+    \item Finally, we print out the variable $\verb!y!$ in our main method. What value gets printed? 
+\end{enumerate}
 
-\noindent The general syntax for a lambda expression is \verb!(type1 parameter1, type2 parameter2, ...) -> expression! or \verb!(type1 parameter1, type2 parameter2, ...) -> {statements;}!. The first form is used when we're returning a value, and the second form is used otherwise. 
+Possibly surprisingly, the answer is $5$. Why? Because when variables are passed in to a method in Java, the method first makes a copy of all of the variables. The copied variable is what is used inside of the method. In other words, changes to a method's parameters are only local; they are not exhibited when we return back to the main method. \\
 
-The following code demonstrates how we can use lambda expressions in the context of our \verb!Task! interface.
+
+This can be confusing --- here's another example:
 
 \begin{lstlisting}
-package lambda;
-
-public class LambdaBasics {
-	public static void main(String[] args) {
-		Task anonymousVersion = new Task() {
-			public int compute(int x) {
-				return x + x;
-			}
-		};
-		System.out.println(anonymousVersion.compute(10));
-
-		Task lambdav1 = (int x) -> {
-			return x + x;
-		};
-		System.out.println(lambdav1.compute(10));
-
-		Task lambdav2 = (x) -> x + x;
-		System.out.println(lambdav2.compute(10));
-
-		Task lambdav3 = x -> x + x;
-		System.out.println(lambdav3.compute(10));
-
-		AnotherTask lambdav4 = () -> 10;
-		System.out.println(lambdav4.analyze());
-
-		Processor lambdav5 = (int x, float y) -> x * y;
-		System.out.println(lambdav5.increase(10, 5));
-
-		pdata((x, y) -> x * y);
-	}
-
-	public static void pdata(Processor p) {
-		System.out.println(p.increase(10, 60));
-	}
+public static void wrongSwap(int a, int b) {
+    int temp = a;
+    a = b;
+    b = temp;
+    System.out.println("a: " + a + "b: " + b);
+}
+public static void main(String args[]) {
+    int x = 2, y = 3;
+    wrongSwap(x, y);
+    System.out.println("x: " + x + "y: " + y);
 }
 \end{lstlisting}
 
-The above code firstly declares an anonymous inner class that implements the \verb!Task! interface. This is done by providing a declaration of the \verb!compute! function. Subsequently, we use a lambda expression to declare \verb!lambdav1! using the first ``general syntax" form that was specified earlier. Next, we declare a second lambda expression named \verb!lambdav2! using the second ``general syntax" form specified earlier. We can note that the key difference between these two declarations is that the first form contains a single expression after the arrowhead, while the second form can contain several statements after the arrowhead (if there's a single statement, like above, the compiler can infer that it needs to return it). Why isn't the \verb!int! type specified in the second declaration? It turns out that our compiler can infer the type to be an \verb!int! based on the context in which the lambda expression is used in.
+An unaware programmer might think that, after we call the \verb!wrongSwap! method, the values of \verb!y! and \verb!y! are interchanged. However, as we've discussed, what will actually happen is that we'll make a copy of \verb!x! and \verb!y! to be used in the method. Thus, change takes place (the value of \verb!x! and \verb!y! are still $2$ and $3$, respectively). \\
 
-We can simplify \verb!lambdav2! even more. The lambda expression \verb!lambdav3! drops the parentheses around the parameter of \verb!lambdav2!; parentheses are not necessary when there is only a single parameter. 
+This construct of making a copy of the variable to be used in the method is known as \vocab{passing by value} (some other programming languages reflect changes made to a parameter in a method; this construct is known as \vocab{passing by reference}). 
 
+\subsection{StringBuffers}
 
-Now let's introduce another interface named \verb!AnotherTask!:
+As we've discussed in the past, strings are immutable --- there isn't any way in which we can change the object itself, but we can change the reference to the object. 
+
+The \verb!StringBuffer! class is a peer class of \verb!String!, and it provides many of the functionalities that we'd want to perform on strings. While strings are fixed-length, immutable character sequences, a \verb!StringBuffer! object can be used to represent growable and writable character sequences. More precisely, the \verb!StringBuffer! class is used to create mutable strings. \\
+
+Some of the most commonly used methods on the \verb!StringBuffer! class are listed below:
+
+\begin{itemize}
+    \item The \verb!append()! method is used to append a sequence of characters to the end of the current string in the \verb!StringBuffer!.
+    \item The \verb!insert()! method is used to insert a sequence of characters into the middle of the current string.
+    \item The \verb!length()! method returns the length (character count) of the current string.
+\end{itemize}
+
+Here's an example:
 
 \begin{lstlisting}
-package lambda;
-
-public interface AnotherTask {
-	public int analyze();
+public static void main(String args[]) {
+    int x = 2, y = 3;
+    StringBuffer a = new StringBuffer("talk");
+    a.append("ing");
+    System.out.println(a);
 }
 \end{lstlisting}
 
-This interface provides us with the prototype for an \verb!analyze()! function that returns an integer and doesn't take in any parameters. 
+As we'd expect, once we append \verb!ing! to \verb!talk!, we end up printing \verb!talking!. \\
 
-As shown in the declaration of \verb!lambda4! in our driver code, we can declare a lambda expression for \verb!analyze! as well by using an empty open-closing parentheses pair, which indicates that there are no parameters. \\
 
-Finally, let's look at one last interface named \verb!Processor!:
+However, it is important to remember that \verb!StringBuffer! have \textit{references} to strings. Thus, if we pass in a \verb!StringBuffer! to a method, and if we modify the \verb!StringBuffer! inside of that method, then we'll end up modifying the string that it points to. Here's another example:
+
 
 \begin{lstlisting}
-package lambda;
+public static void addEnding(StringBuffer b) {
+    b.append("ing");
+    b = null;
+}
 
-public interface Processor {
-	public float increase(int x, float y);
+public static void main(String args[]) {
+    StringBuffer a = new StringBuffer("talk");
+    addEnding(a);
+    System.out.println(a);
 }
 \end{lstlisting}
 
-In our driver code, we've declared a lambda expression named \verb!lambdav5! that can be used for the \verb!increase! function. 
+As mentioned previously, this code segment will end up printing \verb!talking!. \\
+ 
+Would this work with just a \verb!String! object (not a \verb!StringBuffer!)? No --- recall that \verb!String! objects are immutable; even if we were to append to a string with \verb!+=!, we wouldn't be modifying the original object.
 
-Finally, in our driver, we show an application of lambda expressions. The \verb!pdata! function takes in a \verb!Processor! type, and it prints out the return value of the \verb!p.increase(10, 60)! call. Instead of creating an instance of a \verb!Processor! and subsequently passing that object into the function call, we can instead use a lambda expression (as done in the driver) in order to avoid writing so much code. This is also helpful since we don't need to declare one-time-use variables. 
 
-\subsection{Revisiting Shallow Copies}
+\subsection{Returning Values}
 
-Recall the following \verb!Mouse! class that we used to discuss shallow copying:
+As we have already seen, one of the purposes of returning values in a method is way for us to access the results of a computation performed in the method in our main method. The method call in the \verb!main! is always replaced by what the method returns. 
+
+This is demonstrated below:
 
 \begin{lstlisting}
-package cloning;
-
-public class Mouse implements Cloneable {
-	private String type;
-	private int xPos, yPos;
-
-	public Mouse(String type) {
-		this.type = type;
-		xPos = yPos = 0;
-	}
-
-	public void moveMouse(int xPos, int yPos) {
-		this.xPos = xPos;
-		this.yPos = yPos;
-	}
-
-	public String toString() {
-		return type + "-> xPos: " + xPos + ", yPos: " + yPos;
-	}
-
-	/* Notice the return type */
-	@Override
-	public Mouse clone() {
-		Mouse obj = null;
-
-		try {
-			obj = (Mouse) super.clone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
-
-		return obj;
-	}
+public int add(int x, int y) {
+    return (x + y);
+}
+public static void main(String args[]) {
+    int z = add(5, 4);
+    System.out.println(z);
 }
 \end{lstlisting}
 
-When we create a \verb!Mouse! object, and we use the \verb!.clone()! method to create a copy of that mouse, a shallow copy is created. This means that primitive types are copied, while only the memory addresses of non-primitive types are copied. 
-
-In our \verb!Mouse! class, we call \verb!super.clone()! inside of our \verb!.clone()! method. This call returns an \verb!Object! type, but we cast it as a \verb!Mouse! and return a \verb!Mouse! type. Note that this still counts as function overriding (even though we're returning a \verb!Mouse! type instead of an \verb!Object! type) as this is a case of covariant return types. At this point, we're done creating our copy, and we can return this value. This returned value will be independent of the original object since the strings in the class are immutable, and the remaining variables are all primitives, so they are all copied.
-
-
-So when's an example in which the default \verb!.clone()! method is not enough to produce two independent copies (i.e. copies with the property that changing one does not affect the other)? One example in which \verb!.clone()! wouldn't be enough is if we have a new class named \verb!Computer! that has a \verb!Mouse! object as one of its instance variables. In this case, the \verb!.clone()! method will make both \verb!Computer! objects point to the \verb!Mouse! object. However, since the \verb!Mouse! object contains two primitive types (integers) that can be changed, changing an integer in the \verb!Mouse! object will be reflected as a change in both \verb!Computer! objects. 
-
-How do we fix this problem? We can override the \verb!.clone()! method in the \verb!Computer! class, check if a \verb!Mouse! object is present (not null). If it is present, we can call the \verb!.clone()! method on the mouse (which we've already explained does what we want). 
-
-\subsection{Garbage Collection}
-One of the benefits of using Java as a programming language is that we don't have to worry about freeing memory that we are no longer using in the program. More precisely, if we remove all references to an object, this object becomes \vocab{garbage} since it is useless and can no longer affects the program. This is not true in some other programming languages, like C.
-
-This entire process is automated for us in Java, and the process is called \vocab{garbage collection}. Essentially, we're able to reclaim memory used by unreferenced objects when we're running low on memory. This process is performed periodically by Java, but it is not guaranteed to occur. \\
-
-One way in which garbage collection is performed is through the use of \vocab{destructors}, which are void methods with the name \verb!finalize()! that contain the necessary actions to be performed when an object is freed. Destructors are only invoked if garbage collection occurs. Here's an example of what a destructor might look like:
+When we execute this code, the \verb!add(5, 4)! call inside of the main method gets replaced with the value that the method returns. In this case, that value is $9$. Thus, the print statement that follows the method call prints out $9$. 
+Here's another example of a method:
 
 \begin{lstlisting}
-class Foo {
-    void finalize() { ... } // destructor for Foo
+public int maximum(int x, int y) {
+    int max;
+    if (x >= y) {
+        max = x;
+    } else {
+        max = y;
+    }
+    return max;
 }
 \end{lstlisting}
+
+In this method, we take in two integers. We determine which integer is larger than the other, and we return the larger of the two integers. Methods can also have more than one \verb!return! statement. For example, we can rewrite the method above as follows:
+
+\begin{lstlisting}
+public int maximum(int x, int y) {
+    if (x >= y) {
+        return x;
+    } else {
+        return y;
+    }
+}
+\end{lstlisting}
+
+In this rewritten method, we no longer create the variable \verb!max! to store the maximum value of \verb!x! and \verb!y!. Instead, we just exit the function and the return the maximum value as soon as we know what it is. Once we execute a \verb!return! statement, we no longer execute any of the statements in the method that proceed the \verb!return! statement. \\
+
+
+We can also use \verb!return! statements to exit early out of \verb!void! methods. Here's an example:
+
+\begin{lstlisting}
+public void foo(int x) {
+    if (x <= 0) {
+        return;
+    }
+    System.out.println(2*x);
+}
+\end{lstlisting}
+
+What does this method do? If we pass in a positive number, then we print out the double of that number. Otherwise, we don't do anything. 
+
+
+\subsection{Software Development}
+
+There are many aspects that come into play when developing software or large-scale programs. We can describe the development of software using \vocab{the software lifecycle}, which is depicted below:
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[scale=0.6]{media/lifecycle}
+    \caption{Software Development Lifecycle}
+    \label{fig:my_label}
+\end{figure}
+
+As shown above, software development typically starts by recognizing the requirements the software must satisfy. This consideration typically involves thinking about what customers want. Next, we go into the design phase in which we think about what we plan to do. Finally, we go into the coding phase, followed by testing, deployment, maintenance, and finally evolution. 
+
+When developing software, it's also usually helpful to take a \vocab{top-down approach}. A top-down design is a method of ordering knowledge in which we start from a big idea (i.e. what we want to implement), and we break it down into what we need to achieve what's at the top (and we subsequently break those things down, and so on).
+
+
+\vocab{Pseudocode} is also useful in creating software. Pseudocode is an English-like description of the set of steps required to solve a problem. Here's an example of some pseudocode for finding the minimum value from numerous inputted numbers.
+
+
+\begin{center}
+\line(1,0){400}
+\end{center}
+
+\begin{allintypewriter}
+
+FIND\_MINIMUM \string{
+
+\hspace{0.5cm} read the number of values to process; call this value N.
+
+\hspace{0.5cm} repeat the following steps until N input values have been processed \string{
+
+\hspace{1cm} read the next value into x
+
+\hspace{1cm} if x is the first value read, set the current minimum to x.
+
+\hspace{1cm} otherwise, if x is less than the current minimum, then set the current minimum to x.
+
+\hspace{0.5cm} \string}
+
+\string}
+
+\begin{center}
+\line(1,0){400}
+\end{center}
+\end{allintypewriter}
+
+By using pseudocode, we can avoid having to deal with the subtleties of our programming language's syntax and semantics, and we can instead focus on determining the high-level steps necessary to solve a problem. 

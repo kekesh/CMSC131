@@ -1,0 +1,52 @@
+\section{Friday, October 4, 2019}
+
+\subsection{Breaking and Continuing}
+
+In Java, we can use the \vocab{break} keyword to terminate the loop in which the \verb!break! statement is used (i.e. a for-loop, while-loop, or do-while loop). Here's an example:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {   
+        int x = 0;
+        while (true) {
+            if (x == 40) {
+                break; // Jump out of the loop.
+            }
+            x = x + 1;
+            System.out.println(x);
+        }
+    }
+}
+\end{lstlisting}
+
+How does this program work? At a first glance, it might seem like this program has an infinite loop --- we have a loop whose loop condition is just \verb!true!. However, as we've just mentioned, this while-loop includes a \verb!break! statement that gets executed when \verb!x! is equal to $40$. This \verb!break! statement will get us out of the loop after we print out the integers between $0$ and $39$, inclusive. \\
+
+Can a \verb!break! statement be placed anywhere? No --- \verb!break! must be used either inside of a loop, or inside of a switch statement (which we will discuss later). If we place a \verb!break! statement somewhere that it is not supposed to be used, then we receive a compilation error. \\
+
+What happens if we \verb!break! inside of a nested loop? We only exit the inner-most loop we're in (i.e. if we're inside of two for-loops, then we'll go outside of the innermost loop but inside of the outermost loop). \\
+
+Next, we'll discuss the \vocab{continue} keyword in Java. The \verb!continue! keyword can be used inside of a loop to immediately jump to the next iteration of the loop. Here's an example:
+
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {   
+        int x = 0;
+        while (true) {
+            x = x + 1;
+            if (x == 100) {
+                break; // Jump out of the loop.
+            }
+            if (x % 2 == 0) {
+                continue;
+            }
+            System.out.println(x);
+        }
+    }
+}
+\end{lstlisting}
+
+What's happening here? Once again, we have a \verb!while (true) { ... }! loop. However, we can see that we're exiting the loop as soon as our variable \verb!x! becomes $100$. Also, we have now introduced a second conditional in which we check whether \verb!x! is an even number. If so, then we \verb!continue! onto the next iteration of the \verb!while! loop. Consequently, this program ends up printing all odd numbers between $1$ and $100$. \\
+
+
+In general, one should be careful when using \verb!break! and \verb!continue! statements since they modify the control flow of the program. 

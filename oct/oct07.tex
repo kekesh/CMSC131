@@ -1,0 +1,174 @@
+\section{Monday, October 7, 2019}
+
+\subsection{Exceptions}
+
+\subsection{Introduction}
+
+
+When executing a program, oftentimes, something unexpected can happen. For instance, we might run out of memory, try to divide a number by $0$, or try to open a file that doesn't exist. \\
+
+How do we recover from these unexpected occurrences? In Java, we can perform  \vocab{exception handling}. An \vocab{exception} is an event that occurs during the execution of a program that disrupts the normal flow of instructions (the examples listed previously are all examples of exceptions). Exception handling lets us recover in the case that an exception occurs. \\
+
+
+To illustrate an example, consider the following program:
+
+\begin{lstlisting}
+public class MilesPerGallon {
+    public static void main(String args[]) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter numbre of gallons: ");
+        int miles = scanner.nextInt();
+        
+        System.out.println("Enter number of gallons: ");
+        int gallons = scanner.nextInt();
+        
+        int milesPerGallon = miles / gallons;
+        
+        System.out.println("Miles per gallon is " + milesPerGallon);
+        
+        scanner.close();
+\end{lstlisting}
+
+In this program, we let the user provide integer values for the number of miles and the number of gallons that they use, and we subsequently divide the two quantities to find the miles per gallon used. But, what happens if the user enters the value $0$ for \verb!gallons!? We get an exception when we try to compute \verb!milesPerGallon! (since we're trying to divide by $0$). \\
+
+One way to solve this issue is to simply use an \verb!if-else! statement to check whether the user's input is $0$. But, what happens if there are several ``bad" values that we want to be careful of (in this case, the only ``bad" value to be careful of is $0$, but if there were too many, then it might not be feasible to enumerate them all)? In this scenario, we would need to use exception handling. \\
+
+One way in which we can handle exceptions is by using a \verb!try-catch! block. In Java, a \verb!try! statement lets us define a block of code to be tested for errors while it is being executed. Furthermore, the \verb!catch! block can be used to define a block of code to be executed, if an error occurs in the \verb!try! block. Here's the same code from above, but now written with a \verb!try-catch! block: 
+
+\begin{lstlisting}
+public class MilesPerGallon {
+    public static void main(String args[]) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter numbre of gallons: ");
+        int miles = scanner.nextInt();
+        
+        System.out.println("Enter number of gallons: ");
+        int gallons = scanner.nextInt();
+        try {
+            int milesPerGallon = miles / gallons;
+        
+            System.out.println("Miles per gallon is " + milesPerGallon);
+        } catch (ArithmeticException e) {
+            System.out.println("Invalid value provided!");
+            System.out.println("Default message: " + e.getMessage());  
+        }
+        System.out.println("Thank you for using our system.");
+        scanner.close();
+\end{lstlisting}
+
+In the code above, we can note the following changes:
+
+\begin{itemize}
+    \item We've placed the \verb!int milesPerGallon = miles / gallons;! statement in the \verb!try! block that we've created. Why? Because this is the portion of code that might result in an exception. More precisely, the exception that we want to avoid is known as an \verb!ArithmeticException! (this is the name of the exception that results from trying to divide by zero).
+    \item Next, we've added a \verb!catch (..) { ... }! block. Inside of the parentheses directly after the \verb!catch! statement, we need to specify what type of exception we want to watch out for. In this case, we've specified that we want to watch out for \verb!ArithmeticException!s since this type of exception takes place when we try to divide by zero. Is it possible to watch out for \textit{all} exceptions? Yes --- instead of specifying the specific type of exception, like \verb!ArithmeticException!, we would just write \verb!Exception!. 
+    \item Inside of the \verb!catch! block, we specfy the instructions that we want to execute if an exception takes place. In our program, we simply notify the user that they've proivded an invalid value. Moreover, we print the message associated with the \verb!ArithmeticException! exception by calling the \verb!.getMessage()! method on it. 
+    \item Finally, we print ``Thank you for using our system," outside of the \verb!try-catch! block. This message gets printed regardless of what the user inputs. Finally, we close our scanner, and we're done. 
+\end{itemize}
+
+In Java, exceptions are represented by \textit{objects}. Java has a built-in class called \verb!Exception!, and we can treat an \verb!Exception! as an object. This is seen clearly in the example above, where we call the \verb!.getMessage()! method associated with the \verb!ArithmeticException! object \verb!v!.  \\
+
+If a user ever provides the value $0$ for \verb!gallons!, then we jump out of the \verb!try! block as soon as the exception takes place. This means that the statement \verb!System.out.println("Miles per gallon is " + milesPerGallon);! is \textit{never executed}. 
+Here are some of the most common types of exceptions that we should be wary of:
+
+\begin{itemize}
+    \item \verb!ArithmeticException! is an exception that occurs when we try to divide by zero (like in the example above).
+    \item \verb!NullPointerException! occurs when we attempt to acces an object with a null reference.
+    \item \verb!IOException! occurs when we attempt to perform illegal input/output operations.\verb!IndexOutOfBoundsException! occurs when we attempt to access part of an array (which we will introduce later) or \verb!String! outside of the range in which it's defined.
+\end{itemize}
+
+
+\subsection{Exception Propagation}
+
+When an exception takes place, Java always looks in the current method for a catch clause that matches the exception. If one is found, the exception is handled using that \verb!try-catch! block. Otherwise, \vocab{exception propogation} takes place. \\
+
+What is exception propogation? When an exception occurs, Java pops back up the call stack (e.g. goes up through the various methods it is nested in) to see whether the exception is being handled in a catch block of one of the methods. This process is known as exception propogation. The first method that handles the exception defines how we handle the exception. If we get all the way back up to the \verb!main! method and no method catches the exception, then Java will abort your program. \\
+
+Here's an example:
+
+\begin{lstlisting}
+public class Propagation {
+	public static void B() {
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Enter number of miles: ");
+		int miles = scanner.nextInt();
+
+		System.out.println("Enter number of gallons: ");
+		int gallons = scanner.nextInt();
+
+		int milesPerGallon = miles / gallons;
+		System.out.println("Miles per gallon is: " + milesPerGallon);
+
+		scanner.close();
+	}
+
+	public static void A() {
+		System.out.println("Before calling method B");
+		B();
+		System.out.println("After calling method B");
+	}
+
+	public static void main(String[] args) {
+		try {
+			System.out.println("Before calling method A");
+			A();
+			System.out.println("After calling method A");
+		} catch (ArithmeticException e) {
+			System.out.println("Invalid value provided");
+			System.out.println("Default Message: " + e.getMessage());
+		}
+		System.out.println("Thank you for using our system");
+	}
+}
+\end{lstlisting}
+
+In the following code, we note that our ``dangerous code," which might cause an exception, has now been moved to the function \verb!B()!. However, we've introduced another function called \verb!A()!, which simply prints a statement, calls the function \verb!B!, and prints another statement. \\
+
+In our \verb!main! method, we have a \verb!try-catch! block in which we print a statement prior to calling \verb!A!, call \verb!A!, and subsequently print another statement. \\
+
+What happens if the user of the program enters $0$ for the number of miles? Even though our function \verb!B! does not have a \verb!try-catch! block, error propagation will occur since the exception is being thrown inside of a function. More precisely, once we try to divide by $0$, we'll check ``up one level" for a \verb!try-catch! block. Since the function \verb!A! doesn't have a  \verb!try-catch! block either, we'll go up again into the \verb!main! method. In the \verb!main! method, we'll find a \verb!try-catch! block, and we'll perform the error handling in the \verb!catch! block. \\
+
+What happens if we add another \verb!try-catch! block in \verb!A!? Then the \verb!try-catch! block in \verb!A! will be used instead of the \verb!try-catch! block in the main (we always use the \verb!try-catch! block that's closest to the error on the stack). \\
+
+What happens if we \textit{remove} the \verb!try-catch! block in the \verb!main! method? Our program will abort with an exception when we try to divide by $0$. 
+
+
+\subsection{Throwing Exceptions}
+
+So far, we've seen how to handle exceptions. However, it turns out that we can throw our own exceptions as well. Why would we want to do this? Mainly because it helps us debug; by throwing an exception when something goes wrong, we know exactly what went wrong, and we can figure out how to fix the issue. \\
+
+The general syntax to throw an exception is shown below:
+
+\[
+\verb!throw new [ExceptionName](message);!
+\]
+
+
+One instance in which it's useful to throw an exception is when we haven't implemented a method yet:
+
+\begin{lstlisting}
+	public static double computeCost(int option) {
+		throw new UnsupportedOperationException("Not implemented yet");
+	}
+\end{lstlisting}
+
+In the code segment above, we don't have an implementation of the \verb!computeCost! method yet, so we just throw an exception instead. This is helpful since it allows our code to still compile (we don't need to comment out this method until we implement it). Furthermore, if a user tries to call this method, then they will receive a message telling them that the method is not implemented yet. \\
+
+
+Here's another example in which the usefulness of throwing exceptions is clear:
+
+\begin{lstlisting}
+    	public static int processCourse(String courseName) {
+		if (courseName == null) {
+			throw new IllegalArgumentException("Invalid argument");
+		} else {
+			if (courseName.equals("cmsc131")) {
+				return 4;
+			} else {
+				return 1;
+			}
+		}
+	}
+\end{lstlisting}
+
+In this method, we throw an \verb!IllegalArgumentException! if the user provides a \verb!null! reference to a \verb!String! object.  Once again, this is very helpful since it tells us right away what the issue is, and we don't have to spend long periods of time searching for the error. 

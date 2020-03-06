@@ -1,0 +1,264 @@
+\section{Monday, September 30, 2020}
+
+
+\subsection{Introduction to Classes}
+
+In Java, a \vocab{class} is a user-defined blueprint or protottype from which objects are created. Classes represent a set of properties or methods that are common to all objects of one particular type. They allow us to group together several variables and methods into one entity. \\
+
+For instance, we can define a \verb!Superhero! class in one file called \verb!Superhero.java! as follows:
+
+\begin{lstlisting}
+public class Superhero {
+    String name;
+    int strength;
+}
+\end{lstlisting}
+
+In this class, we've added a \verb!strength! and \verb!name! variable to represent the corresponding superhero's strength and name. Essentially, we've grouped together both of these variables into one entity (known as a \verb!Superhero!). Now, in another file, we can create instances of the \verb!Superhero! class: 
+
+\begin{lstlisting}
+public class Driver {
+    public static void main(String args[]) {
+        Superhero s1 = new Superhero();
+        s1.name = "Batman";
+        s1.strength = 100;
+    }
+}
+\end{lstlisting}
+
+We create a \verb!Superhero! object by using the \verb!new! keyword. In the driver program above, we've created a \verb!Superhero! object called \verb!s1!. When we create such an object, the object gets its own \verb!name! and \verb!strength! variables. We can access these variables present in the \verb!Superhero! class by using the dot operator (that is, we put a period after the variable, and we write the name of the variable that we want to access). As shown above, we've set our superhero's name to \verb!Batman!, and we've set its strength to $100$. \\
+
+Classes can also have their own methods. For example, we can modify our \verb!Superhero.java! file to what follows below:
+
+\begin{lstlisting}
+public class Superhero {
+    String name;
+    int strength;
+    
+    void print() {
+        System.out.println("Name: " + name);
+        System.out.println("Strength: " + strength);
+    }
+}
+\end{lstlisting}
+
+Similar to how we access variables, we can access methods using the dot operator:
+
+\begin{lstlisting}
+public class Driver {
+    public static void main(String args[]) {
+        Superhero s1 = new Superhero();
+        s1.name = "Batman";
+        s1.strength = 100;
+        s1.print(); /* This will print s1's name and strength. */
+    }
+}
+\end{lstlisting}
+
+
+Let's add another method:
+
+
+\begin{lstlisting}
+public class Superhero {
+    String name;
+    int strength;
+    
+    void print() {
+        System.out.println("Name: " + name);
+        System.out.println("Strength: " + strength);
+    }
+    
+    void increaseStrength(int delta) {
+        if (delta < 0) {
+            System.out.println("Invalid strength increment.");
+        } else {
+            strength += delta;
+        }
+    }
+}
+\end{lstlisting}
+
+
+Now, once we've instantiated a \verb!Superman! object, we can invoke the \verb!increaseStrength()! method in order to increase the superhero's strength (we don't want our users to be able to decrease the superhero's strength). \\
+
+
+However, we are faced with a problem: nothing is stopping a user from simply setting the \verb!strength! variable of a \verb!Superman! object to a negative value (or a decreased value). Here's an example of what this means:
+
+
+\begin{lstlisting}
+public class Driver {
+    public static void main(String args[]) {
+        Superhero s1 = new Superhero();
+        s1.name = "Batman";
+        s1.strength = 100;
+        /* s1's strength is 100. */
+        s1.increaseStrength(-10);
+        /* s1's strength is still 100. */
+        s1.strength = 90; 
+        /* s1's strength is 90. */
+        System.out.println(s1.strength); /* Prints 90. */
+    }
+}
+\end{lstlisting}
+
+In order to overcome this issue, we can prevent our users from directly accessing the variables inside of a class by using the \vocab{private} keyword. By adding the keyword \verb!private! in front of the variables inside of our \verb!Superhero! class, we won't be able to use the dot operator to access them. Likewise, if we were to make our methods private, then they wouldn't be accessible from the outside (we don't want this, though). It's also a good idea to explicitly write \verb!public! before any of the variables or methods that we intend the user to have access to. \\
+
+If we're making our variables private, then how do we set the variables of a \verb!Superhero! object? We can do so by simply creating a method that does this for us. Consider the following modified \verb!Superhero.java! file:
+
+\begin{lstlisting}
+public class Superhero {
+    /* These variables can't be accessed with the dot operator. */
+    private String name;
+    private int strength;
+    
+    /* This method lets us set the values of our variables. */
+    public void init(String nameIn, int strengthIn) {
+        name = nameIn;
+        if (strengthIn < 0) {
+            System.out.println("Invalid strength.");
+            strength = 0;
+        } else {
+            strength = strengthIn;
+        }
+    }
+    
+    public void print() {
+        System.out.println("Name: " + name);
+        System.out.println("Strength: " + strength);
+    }
+    
+    public void increaseStrength(int delta) {
+        if (delta < 0) {
+            System.out.println("Invalid strength increment.");
+        } else {
+            strength += delta;
+        }
+    }
+}
+\end{lstlisting}
+
+\noindent Now, we can update our driver program to the following:
+
+
+
+\begin{lstlisting}
+public class Driver {
+    public static void main(String args[]) {
+        Superhero s1 = new Superhero();
+        // s1.name = "Batman" -> this won't compile; name is private.
+        s1.init("Batman", 100); 
+        // s1.strength = -1; -> this won't work; strength is private.
+        s1.increaseStrength(5);
+        // s1's stsrength is now 105.
+    }
+}
+\end{lstlisting}
+
+\subsection{Constructors}
+
+Previously, we showed how we can limit a user's access to a class's variables --- by making the variables private, and providing public methods to set the variables. 
+
+Since this is such a common thing to do, Java allows us to define a special method, known as a \vocab{constructor}, that is designed specifically for the purpose of setting up an object's variables upon instantiation. A constructor is declared by creating a method whose name is the same as the class's name. Moreover, this method is called when we're instantiating the object using the \verb!new! keyword. \\
+
+Here's a modification of the \verb!Superhero! code that we saw earlier:
+
+\begin{lstlisting}
+public class Superhero {
+    /* These variables can't be accessed with the dot operator. */
+    private String name;
+    private int strength;
+    
+    /* This is a constructor. */
+    public Superhero(String nameIn, int strengthIn) {
+        name = nameIn;
+        if (strengthIn < 0) {
+            System.out.println("Invalid strength.");
+            strength = 0;
+        } else {
+            strength = strengthIn;
+        }  
+    }
+    
+    public void print() {
+        System.out.println("Name: " + name);
+        System.out.println("Strength: " + strength);
+    }
+    
+    public void increaseStrength(int delta) {
+        if (delta < 0) {
+            System.out.println("Invalid strength increment.");
+        } else {
+            strength += delta;
+        }
+    }
+}
+\end{lstlisting}
+
+The only thing that we've changed now is that we've replaced the \verb!init! method with a constructor. Now instead of invoking the \verb!init! method to instantiate our Superhero's variables, we can simply pass in the values we want ``on-the-fly" when we're instantiating the object:
+
+\begin{lstlisting}
+public class Driver {
+    public static void main(String args[]) {
+        Superhero s1 = new Superhero("Batman", 100);
+        s1.print();
+    }
+}
+\end{lstlisting}
+
+When we execute \verb!Superhero s1 = new Superhero("Batman", 100);!, the \verb!name! and \verb!strenth! of \verb!s1! are set to Batman and $100$. There's also a special type of constructor, known as a \vocab{default constructor}, which is simply a constructor that takes in no arguments. One possible implementation of a default constructor for our \verb!Superman! class might look something like this:
+
+\begin{lstlisting}
+public class Superhero {
+    /* Other code omitted. */
+    
+    /* Default constructor; takes in no arguments. */
+    public Superhero() {
+        strength = 0;
+        name = "NONAME";
+    }
+}
+\end{lstlisting}
+
+Now, if we instantiate an object by calling \verb!Superman s1 = new Superman()!, it automatically gets assigned a strength of $0$, and a name of \verb!NONAME!. \\
+
+
+There's another special method, known as the \verb!toString()! method, which simply tells the Java compiler what to print when we try to print the object. Currently, if we were to add the line \verb!System.out.println(s1);! into our program, our program would not compile. Why? Because \verb!System.out.println()! requires that we insert a string as the parameter. However, if we implement a \verb!toString()! method for the \verb!Superhero! object, then this line will compile, and it'll print whatever our \verb!toString()! method returns. \\
+
+Here's what our modified code would look like:
+
+\begin{lstlisting}
+public class Superhero {
+    /* These variables can't be accessed with the dot operator. */
+    private String name;
+    private int strength;
+    
+    /* This is a constructor. */
+    public Superhero(String nameIn, int strengthIn) {
+        name = nameIn;
+        if (strengthIn < 0) {
+            System.out.println("Invalid strength.");
+            strength = 0;
+        } else {
+            strength = strengthIn;
+        }  
+    }
+    
+    public void increaseStrength(int delta) {
+        if (delta < 0) {
+            System.out.println("Invalid strength increment.");
+        } else {
+            strength += delta;
+        }
+    }
+    
+    public String toString() {
+        String answer;
+        answer = "Name: " + name;
+        answer += ", Strength: " + strength;
+        return answer;
+    }
+}
+\end{lstlisting}
+
+Now, we've gotten rid of our \verb!print()! method, and we've replaced it with a \verb!toString()! method. Instead of calling \verb!s1.print()!, we can instead call \verb!System.out.println(s1)!. 

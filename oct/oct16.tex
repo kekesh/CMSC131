@@ -1,0 +1,21 @@
+\section{Wednesday, October 16, 2019}
+
+Today, we'll continue talking about arrays.
+
+\subsection{Resizing Arrays}
+
+When we initialize an array with a fixed size, this size cannot be changed. For example, the following code will not compile:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        int arr[] = new int[10]; /* Declare an array of size 10. */
+        arr.length += 5; /* THIS DOESN'T WORK! */
+    }
+}
+\end{lstlisting}
+
+We cannot increment the \verb!length! variable associated with an array; it is declared as a constant variable with the \verb!final! keyword. So, how do we resize an array? We need to create a completely new array, and copy over the elements. 
+
+\subsection{Arrays of References}
+

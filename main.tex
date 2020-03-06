@@ -13,10 +13,12 @@
 \usepackage[toc,page]{appendix}
 \usepackage{todonotes}
 \usepackage{blindtext}
+\newenvironment{allintypewriter}{\ttfamily}{\par}
 \usepackage{multicol}
 \usetikzlibrary{calc,shapes.multipart,chains,arrows}
 \usepackage{esint}
 \usetikzlibrary{shapes.multipart}
+  \newcommand{\sep}{\hspace*{.5em}}
 
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
@@ -30,7 +32,7 @@
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
-  numbers=none,
+  numbers=left,
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
@@ -88,22 +90,26 @@
 \include{sep/sep13}%
 \include{sep/sep16}%
 \include{sep/sep18}%
-\include{sep/sep20}%
-\iffalse
+% \include{sep/sep20}%
 \include{sep/sep23}%
 \include{sep/sep25}%
-\include{sep/sep30}%
+\include{sep/sep27}
+\include{sep/sep30}% Fall 2018 video had no audio, so I used Fall 2017 video.
+
 % October
-\include{oct/oct2}%
-\include{oct/oct4}%
-\include{oct/oct7}% 
-\include{oct/oct9}%
+\include{oct/oct02}
+\include{oct/oct04}%
+\include{oct/oct07}% 
+\include{oct/oct09}%
 \include{oct/oct11}%
-\include{oct/oct14}%
+\include{oct/oct14}% Missing random numbers.
 \include{oct/oct16}%
+
+\iffalse
+% October
 \include{oct/oct18}%
 \include{oct/oct21}%
-\include{oct/oct23}%
+\include{oct/oct23}% target
 \include{oct/oct25}%
 \include{oct/oct28}%
 \include{oct/oct30}%
@@ -124,7 +130,6 @@
 \include{dec/dec6}%
 \fi
 % dec 9 = final exam review day. last day of class. students asked questions and prof answered.
-
 \begin{thebibliography}{9}
 \bibitem{effectivejava} 
 Bloch, Joshua. Effective Java. Pearson Education India, 2016.

@@ -1,0 +1,189 @@
+\section{Wednesday, October 9, 2019}
+
+
+\subsection{``Finally" Blocks}
+
+Last time, we introduced \verb!try-catch! blocks, which are used to handle exceptions. Today, we'll introduce the \vocab{finally} keyword. A \verb!finally! block is typically used along with a \verb!try-catch! block. The purpose of a finally block is to hold all of the crucial statements that must be executed, whether the exception occurs or not. The statements present in the \verb!finally! block will \textbf{always} execute, regardless of whether an exception occurs or not. \\
+
+\noindent Here's an example:
+
+\begin{lstlisting}
+	public static int getGasAverage() {
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Enter number of miles: ");
+		int miles = scanner.nextInt();
+
+		System.out.println("Enter number of gallons: ");
+		int gallons = scanner.nextInt();
+
+		try {
+			int milesPerGallon = miles / gallons;
+			System.out.println("Miles per gallon is: " + milesPerGallon);
+			
+			return milesPerGallon;
+		} finally {
+			scanner.close();
+			System.out.println("Before leaving method getGasAverage() (finally message)");
+		}
+	}
+
+	public static void main(String[] args) {
+		try {
+			System.out.println("Before calling method getGasAverage() (main)");
+			System.out.println("Average: " + getGasAverage());
+			System.out.println("After calling method getGasAverage() (main)");
+		} catch (ArithmeticException e) {
+			System.out.println("Invalid value provided (in main)");
+			System.out.println("Default Message: " + e.getMessage());
+		}
+		System.out.println("Thank you for using our system");
+	}
+\end{lstlisting}
+
+What's happening here?
+
+\begin{itemize}
+    \item In main method, we have a \verb!try-catch! block in which we call the function \verb!getGasAverage()!. In our \verb!getGasAverage! function, we read in the \verb!miles! and \verb!gallons! variables using a scanner.
+    \item In the \verb!getGasAverage! function, we have another \verb!try-catch! block in which we divide the \verb!miles! by \verb!gallons!. What happens if the user provides the value $0$ for \verb!gallons!? An exception is thrown, and Java starts searching for a \verb!catch! block. Since there's no \verb!catch! block in the \verb!getGasAverage! function, we use the \verb!catch! block in the main.
+    \item After executing the \verb!catch! block in the \verb!main! method, we execute the code in \verb!finally!. Recall that the statements in \verb!finally! blocks are \textit{always} executed. 
+    \item Inside of the \verb!finally! block, we close the scanner. Note that this is something that we always want to do when we're done with the scanner, whether an exception took place or not. 
+\end{itemize}
+
+In the code segment above, we have a \verb!try { ... } finally { ... }! block inside of our \verb!getGasAverage()! method; however, we are also permitted to have \verb!try { ... } catch (..) { .. } finally { ... }! blocks. \\
+
+In summary, the \verb!finally! keyword allows us to group together some statements that should \textit{always} be executed, whether an exception is thrown or not. Often, these instructions might include closing a scanner, closing a file, or printing some message.
+
+\subsection{String Methods}
+
+In Java, the \verb!String! class has several built-in methods that are readily usable on strings. Today, we'll discuss some of the most commonly used ones. 
+
+
+\begin{itemize}
+    \item The \verb!.charAt()! method takes in an single integer as a parameter, and it returns the character at the given index (starting from $0$). For example, \verb!"Hello".charAt(0)! would return \verb!H!, and \verb!"Hello".charAt(1)! would return $e$
+    \item The \verb!.length()! method returns the number of characters in the \verb!String! (where we start counting from $1$). For instance, \verb!"Hello".length()! returns $5$.
+    \item \verb!.toLowerCase()! and \verb!.toUpperCase()! return another String variable with all of the letters in the \verb!String! in lowercase or in uppercase. For example, \verb!"Hello".toLowerCase()! returns \verb!hello!, whereas \verb!"Hello".toUpperCase()! returns \verb!HELLO!. Since strings are immutable, these methods return entirely new objects.
+\end{itemize}
+
+There are several other String methods available to us as well. A full list is available in the Java API at \url{https://docs.oracle.com/javase/7/docs/api/java/lang/String.html}. \\
+
+Here's a sample program that illustrates how some of these methods work:
+
+\begin{lstlisting}
+package apisEx;
+
+import javax.swing.*;
+
+public class StringExamples {
+	public static void main(String[] args) {
+
+		String name = JOptionPane.showInputDialog("Enter a word");
+		String answer;
+
+		if (name.charAt(0) == name.charAt(name.length() - 1)) {
+			answer = "word starts and end with the same letter";
+		} else {
+			answer = "word does not start and end with the same letter";
+		}
+		JOptionPane.showMessageDialog(null, answer);
+
+		String str1 = JOptionPane.showInputDialog("Enter string");
+		String str2 = JOptionPane.showInputDialog("Enter string");
+		System.out.println("Using compareTo: " + str1.compareTo(str2));
+		System.out.println("Using compareToIgnoreCase: " + str1.compareToIgnoreCase(str2));
+
+		String login = JOptionPane.showInputDialog("Enter login id");
+		answer = "Access Granted";
+		if (!login.equalsIgnoreCase("Hulk")) {
+			answer = "Access Denied";
+		}
+		JOptionPane.showMessageDialog(null, answer);
+
+		String mascot = " Terps ";
+		System.out.println("Character r for Terps is at : " + mascot.indexOf('r'));
+		System.out.println("Before trimming:--" + mascot + "--");
+		String mascotTrimmed = mascot.trim();
+		System.out.println("After trimming:--" + mascotTrimmed + "--");
+		System.out.println("Uppercase: " + mascot.toUpperCase());
+		System.out.println("Lowercase: " + mascot.toLowerCase());
+		System.out.println("Mascot after trimming and case changes:--" + mascot + "--");
+
+		int x = 100;
+		String strIntValue = String.valueOf(x);
+		System.out.println(strIntValue);
+	}
+}
+\end{lstlisting}
+
+In this example, we also introduce the \verb!JOptionPane! class, which is simply a way to produce graphical user interfaces. This can be used to make our programs more interactive; however, it would also be fine to just use a \verb!Scanner!. \\
+
+
+In this example, we read in the variable \verb!name! from the user's input. On Line $11$, we call \verb!.charAt(0)! to retrieve the first character of the user's inputted string, and we call \verb!.charAt(name.length() - 1)! to retrieve the last character of the user's inputted string. If these two characters are the same, then we display the message ``word starts and ends with the same character." \\
+
+Next, we read in two more strings, and we display what the \verb!.compareTo()! and \verb!.compareToIgnoreCase()! methods return. Recall that the \verb!.compareTo()! method returns the integer $0$ if the two strings are equal, a positive value if the first string is lexicographically greater than the second string, and a negative number otherwise. On the other hand, the \verb!.compareToIgnoreCase()! function does the exact same, while ignoring the case of each character (\verb!A! is considered the same as \verb!a!, etc). \\
+
+\subsection{Math Methods}
+
+Now, we'll introduce some useful math methods that we can use. Here are some of the most common methods that are made available to us:
+
+\begin{itemize}
+    \item The \verb!Math.abs()! method takes in a number, and it returns the absolute value of that value. For example, \verb!Math.abs(5) = 5!, and \verb!Math.abs(-5) = 5!. 
+    \item The \verb!Math.ceil()! method takes in a double, and it returns the ceiling (smallest integer larger than the number) of the number. For example, \verb!Math.ceil(3.5) = 4!, and \verb!Math.ceil(5) = 5!
+    \item The \verb!Math.floor()! method takes in a dobule, and it returns the floor (largest integer less than the number) of the number. For example, \verb!Math.floor(3.5) = 3!, and \verb!Math.floor(3) = 3!. 
+    \item The \verb!Math.pow()! method takes in two values, and it returns the first argument raised to the power of the second argument. For example, \verb!Math.pow(2, 3)! evaluates to $2^{3} = 8$. 
+\end{itemize}
+
+
+\noindent Here's a Java program illustrating some of these methods:
+
+\begin{lstlisting}
+public class MathExamples {
+	public static void main(String[] args) {
+
+		// Math m = new Math(); // not possible
+		System.out.println("Math.PI: " + Math.PI);
+		System.out.println("Maximum between 20 and 10: " + Math.max(20, 10));
+		System.out.println("Minimum between 20 and 10: " + Math.min(20, 10));
+
+		double value = Double.parseDouble(JOptionPane.showInputDialog("Enter number"));
+		System.out.println("Square root of " + value + ": " + Math.sqrt(value));
+		System.out.println("Floor of " + value + ": " + Math.floor(value));
+		System.out.println("Ceiling of " + value + ": " + Math.ceil(value));
+		System.out.println("Power (2) of " + value + ": " + Math.pow(value, 2));
+		System.out.println("Rounding " + value + ": " + Math.round(value));
+
+		System.out.println("Set 1");
+		for (int i = 0; i < 100; i++) {
+			System.out.println(Math.random());
+		}
+
+		System.out.println("Set 2");
+		for (int i = 0; i < 100; i++) {
+			System.out.println(200 * Math.random());
+		}
+
+		System.out.println("Set 3");
+		for (int i = 0; i < 100; i++) {
+			System.out.println(Math.floor(200 * Math.random()));
+		}
+
+		System.out.println("Set 4");
+		for (int i = 0; i < 100; i++) {
+			System.out.println(Math.floor(201 * Math.random()));
+		}
+
+		System.out.println("Set 5");
+		for (int i = 0; i < 100; i++) {
+			System.out.println(Math.floor(200 * Math.random()) + 1);
+		}
+	}
+}
+\end{lstlisting}
+
+Here are some useful observations that we can make:
+
+\begin{itemize}
+    \item First, we read in a \verb!double! on Line $9$. Line $10$ prints out the square root of the number, Line $11$ prints out the floor of the number, Line $12$ prints out the ceiling of the number, Line $13$ prints out the square of the number, and Line $14$ rounds the number.
+    \item On Line $18$, we print out \verb!Math.random()! $100$ times. What does \verb!Math.random()! do? It returns a pseudorandom number on the interval $[0, 1]$. 
+    \item In the subsequent for-loops, we shift our interval \verb![0, 1]! to various other intervals so that we can generate random numbers in any interval we want. For example, if we add a constant value $c$ to \verb!Math.random()!, then we end up generating values in the interval \verb![c, 1 + c]!. Moreover, we can scale the interval by multiplying it by different values.
+\end{itemize}

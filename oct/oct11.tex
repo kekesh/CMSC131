@@ -1,0 +1,198 @@
+\section{Friday, October 11, 2019}
+
+\subsection{Immutable Classes}
+
+In Java, an \vocab{immutable class} is a class whose content we cannot change. Recall that the \verb!String! class in Java is immutable. Why is immutability good? Because they make our code more safer and cleaner, which is particularly important when we are multithreading. \\
+
+The \vocab{final} keyword in Java can be used before a variable to prevent it from being changed. The only place in which we can assign a value to a \verb!final! variable is inside of a constructor. After the constructor is executed, a \verb!final! variable cannot be changed. \\
+
+
+
+Here's an example of an immutable class:
+
+\begin{lstlisting}
+public final class Telephone {
+	private final String number;
+
+	public Telephone(String number) {
+		this.number = number;
+	}
+
+	public String getNumber() {
+		return number;
+	}
+
+	public String toString() {
+		return "Telephone [number=" + number + "]";
+	}
+
+	public static void main(String[] args) {
+		Telephone telephone = new Telephone("1-899-COMPILE_JAVA");
+
+		System.out.println(telephone);
+	}
+}
+\end{lstlisting}
+
+In the code segment above, we've also specified our class as \verb!final!. Declaring a class as final prevents it from being extended, which is something that we will discuss later. In the code above, we've declared both our class and our \verb!number! variable as \verb!final!. This is an example of an immutable class since, once an object is created, it cannot be modified.  \\
+
+\subsection{Ternary Operator}
+
+In Java, the \vocab{ternary operator} is an operator that takes in three arguments. The first argument is a Boolean condition, the second argument is the result that the operator should return if the condition evaluates to true, and the third condition is the result that the operator should return if the condition evaluates to false. \\
+
+The ternary operator might look confusing, but with a few examples, it is not too hard to understand. The general form of the ternary operator is shown below:
+
+\[
+\verb!condition ? exprValueIfConditionIsTrue : exprValueIfConditionIsFalse!
+\]
+
+Here's an example:
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        
+        Scanner scan = new Scanner(System.in);
+        int x = scan.nextInt();
+        int y = scan.nextInt();
+        int ans = (x > y) ? x : y;
+        System.out.println("Maximum is " + ans);
+        scan.close();
+    }
+
+}
+\end{lstlisting}
+
+What's this program doing? First, we just declare a scanner, and we read in two integer variables \verb!x! and \verb!y!. Next, we initialize the variable \verb!ans! using the ternary operator. Here, our condition is the Boolean expression \verb!(x > y)!. If this Boolean expression evaluates to \verb!true!, then we set \verb!ans! equal to \verb!x!; otherwise, we set \verb!ans! equal to \verb!y! In other words, we are simply setting \verb!ans! to the maximum of the two variables that we are reading in. \\
+
+We could easily change our initialization of \verb!ans! to 
+
+\[
+\verb!int ans = (x < y) ? x : y;!
+\]
+
+if we wanted \verb!ans! to store the minimum value instead. \\
+
+It might be helpful to think of the ternary operator as a shortened way of writing an if-else statement. If the condition provided is true, then we evaluate the ternary expression to the first expression provided; otherwise, we evaluate it to the second expression provided. 
+
+\subsection{The Switch Statement}
+
+A \vocab{switch} statement in Java allows a variable to be tested for equality against a list of several values. Each value in the list is called a \vocab{case}, and the variable being ``switched on" is checked for each case. \\
+
+Pretty much, a \verb!switch! statement is a more convenient --- and often more efficient --- way to perform a multi-way conditional based on a single control value. \\
+
+The general syntax of a \verb!switch! statement is as follows:
+
+
+\begin{lstlisting}
+switch (variable) {
+    case 1:
+        System.out.println("Case 1!");
+        break;
+    
+    case 2:
+        System.out.println("Case 2!");
+        break;
+        
+    // ... ... ....
+    
+    default:
+        System.out.println("Invalid");
+        break;
+}
+\end{lstlisting}
+
+The \verb!switch! statement code presented above would be equivalent to the following code:
+
+\begin{lstlisting}
+if (variable == 1) {
+    System.out.println("Case 1!");
+} else if (variable == 2) {
+    System.out.println("Case 2!");
+    // ... .... ..
+} else {
+    System.out.println("Invalid!");
+}
+\end{lstlisting}
+
+The case that is selected in a \verb!switch! statement is dependent on the value of the \verb!variable!. The \verb!break! statement within each case is used to exit the \verb!switch! statement afterwards.
+
+
+Here's a fully working example:
+
+\begin{lstlisting}
+public class SwitchExample {
+	public static void printDay(int day) {
+		String answer;
+
+		switch (day) {
+		case 6:
+			answer = "Saturday";
+			break;
+		case 1:
+		case 2:
+		case 3:
+		case 4:
+		case 5:
+			answer = "Weekday";
+			break;
+		case 7:
+			answer = "Sunday";
+			break;
+		default:
+			answer = "Invalid day value";
+			break;
+		}
+		System.out.println("Value " + day + " corresponds to " + answer);
+	}
+
+	public static int printYear(String type) {
+		int year;
+
+		switch (type) {
+		case "Freshman":
+			year = 1;
+			break;
+		case "Sophomore":
+			year = 2;
+			break;
+		case "Junior":
+			year = 3;
+			break;
+		case "Senior":
+			year = 4;
+			break;
+		default:
+			year = -1;
+			break;
+		}
+
+		return year;
+	}
+
+	public static void main(String[] args) {
+		Scanner scanner = new Scanner(System.in);
+
+		System.out.println("Enter integer value for day of the week: ");
+		int day = scanner.nextInt();
+		printDay(day);
+
+		System.out.println("Enter student's classification: ");
+		System.out.println(printYear(scanner.next()));
+
+		scanner.close();
+	}
+}
+\end{lstlisting}
+
+Here's what's happening:
+
+\begin{itemize}
+    \item In the main method, we first read in an integer from the user, and we store it in the variable \verb!day!. Next, we call our function \verb!printDay()! with \verb!day! as an input parameter.
+    \item In our \verb!printDay()! method, we utilize a switch statement. The variable that is being switched on is \verb!day!. In each case, we compare the value of \verb!day! to the case number (first, we compare \verb!day! to $6$, then we compare it to $1$, and so on). 
+    \item If \verb!day! is equal to $6$, then we set \verb!answer! equal to \verb!Saturday!, and we break out of the switch statement. If \verb!day! is equal to $1, 2, 3, 4, \text{ or } 5$, then we set \verb!answer! equal to \verb!Weekday!, and we break out of the \verb!switch! statement.
+    \item If \verb!day! has any other value, then we set \verb!answer! to \verb!Invalid day value!, and we break out of the \verb!switch! statement.
+    \item Finally, we print out the value of \verb!day!, and we print out the \verb!answer! string that we stored. 
+\end{itemize}
+
+The \verb!printYear! function works in a similar manner; however, it demonstrates that \verb!switch! statements don't only have to be used with integers --- they can be used with strings as well. 

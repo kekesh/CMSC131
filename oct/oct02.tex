@@ -1,0 +1,123 @@
+\section{Wednesday, October 2, 2019}
+
+Last time, we started talking about classes. Recall that classes can be \vocab{instantiated} using the \verb!new! keyword (for example, we can instantiate a \verb!Superhero! by writing \verb!Superhero s = new Superhero();!). An \vocab{object} is simply an instance of a class.
+
+\subsection{.equals() method}
+
+When we're implementing a class, sometimes it's useful to be able to be able to compare two instances of the class. In order to do so, there's a special function --- called \verb!.equals()! (``dot equals") --- that we can implement. Recall, for instance, that we use this method when we want to compare two strings (i.e. \verb!"Hello".equals("Hello")! evaluates to \verb!true!), which means that the \verb!String! class in Java implements the \verb!.equals()! method. \\
+
+How does the \verb!.equals()! method work? Here's an example:
+
+\begin{lstlisting}
+public class Buffalo {
+    public String name;
+    public int age;
+    
+    public Buffalo(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public Buffalo(int age) {
+        this.age = age;
+    }
+    
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Buffalo buffalo = (Buffalo) other;
+        return (this.name == other.age && this.age == other.age);
+    }
+    
+}
+\end{lstlisting}
+
+Note that we've used a new keyword: \vocab{this}. The \textit{this} keyword can be used in Java as a reference to the current object. This is useful particularly when we have two variables of the same name, which allows us to get rid of ambiguity. \\
+
+In the \verb!Buffalo! class above, we have implemented a method called \verb!equals! that returns a \verb!boolean!. Every time we create our own \verb!.equals()! method, we need to make sure that the function has the same function prototype (the return value and parameter list) as in this example. Moreover, the method needs to return \verb!true! if we deem the other object being passed in as a parameter to be equal to the current object, and it should return false otherwise. \\
+
+How does our \verb!.equals()! method work?
+
+\begin{itemize}
+    \item First, we take in an object \verb!obj! as a parameter. We want to determine whether this object is equal to the current object that our class is representing.
+    \item Firstly, we check if the parameter that we passed in \textit{is} the class that we're representing. This is done by, once again, using the \verb!this! keyword to obtain a reference to the current object. If the parameter passed in is the same as the class we're representing, then we know that the two objects must be the same.
+    \item Next, we check whether the parameter is \verb!null!. If so, we return \verb!false! since we know that our current object isn't null, meaning that it cannot be equal to the parameter object. Moreover, we call \verb!getClass()! on our current object and the parameter object. This is a special function that Java provides for objects, and it tells us whether or not two objects have the same type. If they do not have the same type, then we can return false.
+    \item At this point, we know that the two objects have the same type. Thus, we can treat the parameter object \verb!obj! as a \verb!Buffalo! object. This is done by casting the parameter as a \verb!Buffalo!. Finally, we can check the criteria that we want in order to check if the two \verb!Buffalo! objects are equal. In particular, we verify that the parameter object's name and age are equal to the current object's name and age. If they are, then we return \verb!true!; otherwise, we return \verb!false!.
+\end{itemize}
+
+
+Can we use the $\verb!.equals()!$ method without implementing it? Yes -- but it may not do what we want it to do. Every class, by default, has a \verb!.equals()! method. How does it work? It simply compares the two memory addresses of the variables we are using. In our \verb!Buffalo! example above, even if we set the \verb!name! and \verb!age! of two \verb!Buffalo! objects to the same values, we would end up finding that the default \verb!.equals()! method asserts that these two objects are different. In summary, it's not a good idea to rely on the default \verb!.equals()! method that Java provides for you.
+
+
+\subsection{The ``this" Keyword}
+
+Previously, we saw that we can use the \textit{this} keyword to obtain a reference to the current object. Here, we'll see a few more applications of the \verb!this! keyword. \\
+
+Here is an implementation of a \verb!Person! class:
+
+\begin{lstlisting}
+public class Person {
+    private String name;
+    private int age;
+    
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+    
+    public Person(String name) {
+        this(name, 18);
+    }
+    
+    public person() {
+        this("NONAME", 18);
+    }
+    
+    public Person increaseAge(int delta) {
+        age += delta;
+        return this; /* Return reference. */
+    }
+}
+\end{lstlisting}
+
+\begin{itemize}
+    \item In our first constructor, we use the \verb!this! keyword to reference the instance variables inside of our class. As mentioned previously, it can be useful to use this \verb!this! keyword here since our parameter variables have the same names as our instance variables. Using \verb!this! avoids ambiguity. 
+    \item In our next two constructors, we use the \verb!this! keyword, almost like a function. What are these two lines doing? This is a special way to call one of the current object's constructors. In this case, since we've provided two parameters of type \verb!String! and \verb!int!, Java will recognize that we're trying to use the first constructor that we created. Thus, we set \verb!name! and \verb!age! according to the values that we provide in our \verb!this()! call. This is helpful since it allows us to reuse the code that we use in one constructor in another.
+    \item Finally, in our \verb!increasingAge()! function, we return a reference to the current object by writing \verb!return this;!. This is allowed since our function prototype indicates that we're returning a \verb!Person!, and that's exactly what we're doing. 
+\end{itemize}
+
+
+Here's another example:
+
+\begin{lstlisting}
+public class HdTv {
+    private String make;
+    private int cost;
+    
+    public HdTv(String make, int cost) {
+        this.make = make;
+        this.cost = cost;
+    }
+    
+    public HdTv(HdTv tv) {
+        make = new String(tv.make);
+        cost = tv.cost;
+    }
+    
+    public String toString {
+        return "Make: " + make + ", Cost: " + cost;
+    }
+    
+    public static void main(String args[]) {
+        HdTv tv = new HdTv("Poly", 100);
+        System.out.println("Original--> " + tv);
+        HdTv copy = new HdTv(tv);
+    }
+}
+\end{lstlisting}
+
+In this example, we introduce another application of the \verb!this! keyword: our \verb!HdTv! class implementation provides us with a constructor whose only parameter is another \verb!HdTv! object. The usefulness of this constructor is illustrated in our main method, where we initialize an \verb!HdTv! called \verb!copy! using another \verb!HdTv! called \verb!tv!. Such a constructor that uses an existing object to create a new object is known as a \vocab{copy constructor}.
