@@ -1,0 +1,102 @@
+\section{Wednesday, October 23, 2019}
+
+\subsection{Recursion}
+
+In computer science, \vocab{recursion} is a problem solving technique where the solution to our given problem depends on solutions to smaller instances of the same problem. 
+
+\begin{example}
+[Factorial]
+Recall that the \textit{factorial} of a non-negative integer $n$ is defined as follows:
+\[
+n! = n \cdot (n - 1) \cdot (n - 2) \cdots 1.
+\]
+For example, $3! = 3 \cdot 2 \cdot 1 = 6$. We can equivalently define the factorial of a number in a recursive manner by instead writing
+\[
+n! = n \cdot (n - 1)!,
+\]
+where $n \geq 1$, and $n! = 1$ if $n = 0$ or $n = 1$. \\
+
+\noindent Note that we've used a factorial in the definition of the factorial. 
+\end{example}
+
+In programming, we say that a function is \vocab{recursive} if it calls itself. For instance, we can implement a method to compute $n!$ as follows:
+
+\begin{lstlisting}
+int fact(int n) {
+    if (n == 0) {
+        return 1; /* Base case. */
+    }
+    return n * fact(n - 1); /* Recursive step; n! = n * (n - 1)! */
+}
+\end{lstlisting}
+
+If $n$ is already $0$, then we just return $1$. Otherwise, we return the product of $n$ and $(n - 1)!$. Our program will then compute \verb!fact(n - 1)!, which repeats in a similar manner. Since we're subtracting one between each call to \verb!fact!, we'll eventually call \verb!fact()! with an argument of zero. When this happens, we'll stop making recursive calls, and we'll return $1$. \\
+
+For example, let's suppose we call the method above with $n = 5$. Since $n$ is not equal to zero, we'll end up returning $5 \cdot \verb!fact(4)!$. Now, we'll need to compute \verb!fact(4)! before we can return the original value. In a similar manner, \verb!fact(4)! will expand to $4 \cdot \verb!fact(3)!$, and so on. Eventually, we'll call \verb!fact(0)!, and this will evaluate to $1$. \\ 
+
+Function calls are stored on the stack in our memory and returning the method removes the function from the stack. The illustration provided at \url{https://www.cs.usfca.edu/~galles/visualization/RecFact.html} depicts what the recursive call stack looks like when we compute factorials recursively. \\
+
+
+There are a couple of other terms that we need to become familiar with. First of all, a \vocab{base case} in recursion is the terminating scenario during recursion that does not use recursion to produce the answer. In the example above, one might note that every invocation to \verb!fact()! with a non-negative integer eventually gets reduced to \verb!fact(0)!, which we handle separately.  Thus, $n = 0$ is our base case in our example. The \vocab{recursive step} of a recursive method is a recursive call to the same method. In the example above, Line $5$, which returns \verb!n * fact(n - 1)! is our recursive step. \\
+
+It is very important to have a base case when recursing. If we don't have a base case, then we'll keep on recursing infinitely, and we'll eventually run out of stack space. This is known as a \vocab{stack overflow} error. \\
+
+Every problem that can be solved \textit{with} recursion can also be solved \textit{without} recursion. A solution to a problem that does not use recursion is known as an \vocab{iterative} solution. There are a few pros and cons to using recursive versus iterative solutions:
+
+\begin{itemize}
+    \item Iterative algorithms are typically more efficient. Why? Because no additional time is spent making function calls. This lets us run faster and use less memory (we aren't using any stack space, even if it's just temporary).
+    \item Recursive algorithms have higher overhead since we require time to perform function calls. In addition, we require memory for the call stack. However, it might be simpler to code a recursive algorithm. As a direct consequence, recursive algorithms are often easier to understand, debug, or maintain. 
+\end{itemize}
+
+\begin{example}
+[Proving Correctness]
+We can show that a recursive algorithm is \textit{correct} (i.e. always produces the intended answer) by firstly demonstrating that the base case(s) are recognized correctly and solved correctly. Next, we show that the recursive case solves one or more simpler subproblems and it makes progress towards the base case. These are the principles of \vocab{proof by induction}; however, we will not discuss this concept any further in this class.
+\end{example}
+
+Here's another example of a recursive program, which computes the $n^{\text{th}}$ Fibonacci number:
+
+\begin{lstlisting}
+public class Fibonacci {
+	public static long callsCounter = 0;
+
+	public static long fib(long n) {
+		callsCounter++;
+
+		if (n == 0) {
+			return 0;
+		} else if (n == 1) {
+			return 1;
+		} else {
+			return fib(n - 1) + fib(n - 2);
+		}
+	}
+}
+\end{lstlisting}
+
+Recall that the $n^{\text{th}}$ Fibonacci number is defined as $F(n) = F(n - 1) + F(n - 2)$ for $n \geq 2$, where $F(0) = 0$ and $F(1) = 1$. The first few Fibonacci numbers are $0, 1, 1, 2, 3, 5, 8, 13, \text{ and } 21$. \\
+
+In the method above, we take in an integer $n$ (which is non-negative by assumption). We check whether $n$ is equal to zero or one (these are our base cases), and we return the answer if either of these conditions evaluate to true. Otherwise, we recursively compute \verb!fib(n - 1)! and \verb!fib(n - 2)!, and we return the sum of these two computed values. \\
+
+In order to gain a better understanding of recursive methods, we'll look at another example. Here's a method that prints a string recursively (note that one wouldn't actually do this in practice, but we are demonstrating this example since we want to learn recursion): 
+
+\begin{lstlisting}
+public class StringRecursiveMethods {
+	/**
+	 * Prints a string recursively (does not handle empty string)
+	 * 
+	 * @param str
+	 */
+	public static void printString(String str) {
+		if (str.length() == 1) {
+			System.out.print(str.charAt(0));
+		} else {
+			System.out.print(str.charAt(0));
+			printString(str.substring(1));
+		}
+	}
+}
+\end{lstlisting}
+
+First of all, we check whether our string has length $1$ (i.e. it is a single character). In this case, we simply print the character, and we are done. This is our base case. On the other hand, if the length of the string is greater than $1$, then we print the first character in the string, and we make a recursive invocation to our function with the same string, except with the first character removed.\footnote{Recall that the substring() method returns the substring of the string starting at the $x^{\text{th}}$ character.} \\
+
+For instance, suppose we call \verb!printString("Hey")!. We'll first print \verb!H!, and we'll make a recursively call \verb!printString("ey")!. Next, we print \verb!e!, and we recursively call \verb!printString("y")!. Finally, we print \verb!y!, and we stop making recursive calls.%

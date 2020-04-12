@@ -1,0 +1,100 @@
+\section{Monday, October 28, 2019}
+
+
+\subsection{More Recursion Examples}
+
+Two lectures ago, we introduced recursion. Recursion is an important problem-solving technique, so we'll spend today looking at some more examples.
+
+Let's look at the following \verb!find! method, which is used to determine whether a target character is a part of that string:
+
+\begin{lstlisting}
+	/**
+	 * Finds a character in a string recursively
+	 * 
+	 * @param str
+	 */
+	public static boolean find(String str, char target) {
+		if (str.isEmpty()) {
+			return false;
+		} else if (str.charAt(0) == target) {
+			return true;
+		} else {
+			return find(str.substring(1), target);
+		}
+	}
+\end{lstlisting}
+
+In the method above, we take in a string \verb!str! and a target character \verb!target!. We want to determine whether \verb!target! occurs at least once in \verb!str!. \\
+
+The key idea is to check if the first character in \verb!str! equals the \verb!target! character. If so, then we can immediately conclude that that \verb!target! is contained in \verb!str!, so we return \verb!true!. On the other hand, if the first character in \verb!str! does \textit{not} equal the \verb!target! character, then we recursively invoke our \verb!find! function on the remainder of the string (we remove the first character from the original string using the \verb!.substring()! method). This process repeats until either we find the target, or we run out of characters. In the former case, we'll end up returning \verb!true!. In the latter case, our base case returns false. \\
+
+
+Here's another recursive method that can be used to count the number of times a particular character occurs in a string (once again, we could just use a for-loop, but we want to understand recursion better). 
+
+\begin{lstlisting}
+	/**
+	 * Returns the number of instances of target in the string
+	 * 
+	 * @param str
+	 * @param target
+	 * @return
+	 */
+	public static int countChar(String str, char target) {
+		if (str.isEmpty()) {
+			return 0;
+		} else if (str.charAt(0) == target) {
+			return 1 + countChar(str.substring(1), target);
+		} else {
+			return countChar(str.substring(1), target);
+		}
+	}
+\end{lstlisting}
+
+Once again, we take in a ctring \verb!str! as well as a target character \verb!target!. We process the string character-by-character. If the first character in the current string is equal to the target character, then we add one to our counter and process the remainder of the string. On the other hand, if the first character does not equal the target character, then we simply move on to the next character. This process repeats until our string is empty (we've processed all of the characters), and we return $0$ when this takes place. \\
+
+Suppose we want to count the number of times the string \verb!bob! has the letter \verb!b!. We would initially call \verb!countChar! with \verb!str! set to \verb!bob! and \verb!target! set to \verb!b!. In this first function call, our string is not empty, so the statements in the first  \verb! if (...)! conditional do not get executed. Subsequently, we check whether or not \verb!str.charAt(0) == target! is true. Since the first character in \verb!bob! is equal to the target character \verb!b!, this Boolean expression evaluates to true. Thus, we return \verb!1 + countChar("ob", 'b')!. \\
+
+When computing \verb!countChar("ob, 'b')!, we end up returning \verb!countChar("b", 'b')! since the string \verb!"ob"! is neither empty nor does its first character equal \verb!b!. Similarly, the method \verb!countChar("b", 'b')! returns \verb!1 + countChar("", 'b')! since the first character of \verb!"b"! matches \verb!b!. \\
+
+Finally, \verb!countChar("", 'b')! returns $0$ since our base case is executed, and no more recursive calls are performed. Adding everything up, we find that our initial call to \verb!countChar("bob", 'b')! returns $1 + 1 + 0 = 2$, which is the expected answer. \\
+
+This next method returns all instances of a character from a provided string:
+
+\begin{lstlisting}
+	/**
+	 * Returns a String without the specified target character
+	 * 
+	 * @param str
+	 * @param target
+	 * @return
+	 */
+	public static String removeChar(String str, char target) {
+		if (str.isEmpty()) {
+			return "";
+		} else if (str.charAt(0) == target) {
+			return removeChar(str.substring(1), target);
+		} else {
+			return str.charAt(0) + removeChar(str.substring(1), target);
+		}
+	}
+
+\end{lstlisting}
+
+This method might be a little bit trickier to understand. Once again, we process the string character-by-character. If the first character in the current string is equal to the character that we want to remove, then we simply return the portion of the string after that character. On the other hand, if the first character in the current string is \textit{not} equal to the target character, then we keep the current character and prepend it to whatever \verb!removeChar()! returns on the remainder of the string. Our base case is handled when we have processed every character in the string and our string becomes empty. It may be insightful to trace this method for a sample string. 
+
+
+\subsection{Tail Recursion}
+
+\vocab{Tail recursion} is a type of recursive function in which we do not need to perform any further actions on a recursive call. In other words, a tail recursive function is a recursive function in which the function calls itself at the end (the ``tail" of the function) of the function in which no computation is done after the recursive call. For example, the \verb!removeChar()! method that we just saw is tail recursive because no further processing is necessary once we've made the last recursive call. On the other hand, the \verb!countChar()! method that we saw for arrays is not tail recursive since we might need to add $1$ to the value returned by the recursive call. \\ 
+
+\noindent Why do we care about tail recursion? Mostly because using tail recursion allows us to write more optimized code.  Since tail recursive functions don't have any processing after their recursive calls, there is no need to actually store the current function in the stack. Instead, we can save some memory and only store the recursive call. \\
+
+
+\subsection{Common Recursion Problems}
+
+Some common recursion-related problems that one may encounter are listed below:
+
+\begin{itemize}
+    \item Infinite recursion: This problem can occur if our recursive step does not simplify the original problem into a smaller-sized subproblem. We can also encounter infinite recursion when we forget to include a base case. For example, something like, \verb!int bad(int n) { if (n == 0) return bad(n-1); }! is an example of infinite recursion since we will keep calling this function without terminating. Eventually, our program halts when our stack runs out of memory from our recursive calls. 
+    \item Efficiency: Just because recursion works doesn't mean it's the best solution. This is particularly true since recursive functions often perform the same work over and over again. 
+\end{itemize}

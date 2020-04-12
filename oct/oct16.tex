@@ -15,7 +15,157 @@ public class Example {
 }
 \end{lstlisting}
 
-We cannot increment the \verb!length! variable associated with an array; it is declared as a constant variable with the \verb!final! keyword. So, how do we resize an array? We need to create a completely new array, and copy over the elements. 
+We cannot increment the \verb!length! variable associated with an array; it is declared as a constant variable with the \verb!final! keyword. So, how do we resize an array? We need to create a completely new array and copy over the elements. Afterwards, we need to change the reference of our old array to the new array so that it refers to the newly, resized array. \\
+
+What happens to our old array? Java has a built-in \vocab{garbage collector}, which detects objects that are no longer being used. The garbage collector will recognize that our old array is no longer being used, and it will return the memory that the array once occupied so that we can use it again in the future. \\
+
+Here's some example code which illustrates the process of resizing an array of size $5$ to an array of size $10$.
+
+\begin{lstlisting}
+public class Example {
+    public static void main(String args[]) {
+        int arr[] = new int[5]; /* Declare an array of size 10. */
+        arr[0] = 0;
+        arr[1] = 1;
+        arr[2] = 2;
+        arr[3] = 3;
+        arr[4] = 4;
+        // arr[5] = 5 wouldn't work.
+        
+        // In order to have a sixth element, we need to resize our array. 
+        
+        /* Declare a new array. */
+        int temp[] = new int[10];
+        for (int i = 0; i < 5; i++) {
+            temp[i] = arr[i]; /* Copy over the old elements. */
+        }
+        arr = temp; /* Change the reference. */
+        
+        arr[5] = 5; /* We've resized the array; this works now. */
+    }
+}
+\end{lstlisting}
+
+At first, we create an array \verb!arr! of size $5$, and we store the elements $0$, $1, 2, 3,$ and $4$. However, we've now decided that we want to store even more elements. In order to do so, we create a new array of size $10$ (called \verb!temp!), and we copy over all of the elements in \verb!arr! into \verb!temp!. Finally, we change the reference of our old array by simply assigning the name of the old array to the name of the new array. At this point we're done, and we can access five more indices. 
 
 \subsection{Arrays of References}
 
+ Recall that a reference is a variable that has a name and can be used to access the contents of an object. For instance, a \verb!String! is a reference. 
+ 
+ There are a few important facts to keep in mind when dealing with arrays of references (like an array of strings). \\
+ 
+ Consider the following code segment:
+ 
+ \begin{lstlisting}
+ package examples;
+
+import java.util.Scanner;
+
+public class ArrayOfReferences {
+
+	public static void main(String[] args) {
+		String[] names; /* How many objects do we have? */
+		int numberOfNames = 3;
+
+		Scanner scanner = new Scanner(System.in);
+
+		/* Reading names */
+		names = new String[numberOfNames]; /* How many objects do we have? */
+
+		for (int idx = 0; idx < names.length; idx++) {
+			System.out.println("Enter the name of a friend: ");
+			names[idx] = scanner.next();
+		}
+
+		/* Printing names */
+		System.out.println("Your friends are: ");
+		for (int idx = 0; idx < names.length; idx++) {
+			System.out.println(names[idx]);
+		}
+
+		scanner.close();
+	}
+}
+ \end{lstlisting}
+ 
+ First of all, we declare an array of \verb!String! variables by writing \verb!String[] names;!. It is important to note that, at this point, we do not have any objects. Next, we read in an integer from the user's input, and we use the inputted value as the size of our array. On Line $14$, we instantiate our array of \verb!String! variables to have size equal to the value inputted by the user. After Line $14$ is executed, however, we still have zero objects (we have several \textit{references}). This is the key takeaway of this example: if we have a class \verb!A!, and we write \verb!A arr[] = new A[10]!, then no instances of \verb!A! are created by our code; we only obtain ten references (some of these references may be referring to the same object!). \\
+ 
+
+ Finally, we use a for-loop in conjunction with our \verb!Scanner! to read in the the values that we want to store in each of our arrays, and we print them afterwards. At this point, each entry in the array refers to a string literal that was inputted by the user. \\
+ 
+ \subsection{Arrays as Parameters}
+
+Earlier in this class, we discussed how all parameters in Java are passed by reference.\footnote{This topic is discussed in the notes for September 23, 2019.} We demonstrated an example in which a method called \verb!wrongSwap(..., ...)! did not actually interchange the two parameter variables, as we may have expected it to. \\
+
+When we pass an array into a method, however, we are really passing the memory address of the array (the items in the array itself aren't copied!). This means that modifying the elements of an array inside of a method will be reflected outside of the method! This is very important to remember.
+
+For example, consider the following code:
+
+\begin{lstlisting}
+public class Example {
+    void multiplyInt(int x) {
+        x = 3 * x;
+    }
+    
+    void multiplyArrayInts(int arr[]) {
+        for (int i = 0; i < arr.length; i++) {
+            arr[i] = 3 * arr[i];
+        }
+    }
+    
+    public static void main(String args[]) {
+        int num = 5;
+        int arr[] = {1, 2, 3, 4, 5};
+        
+        multiplyInt(5); // num does not get changed.
+        multiplyArrayInts(arr); // every element in arr[] gets changed.
+    }
+}
+\end{lstlisting}
+
+In this code segment, we declare an \verb!int! called \verb!num! and an array of \verb!int! variables, called \verb!arr!. Next, we call two methods, both of which multiply the integers stored in each of the variables. Since Java variables are passed by reference in Java, the call to \verb!multiplyInt()! does not modify the variable \verb!num!. However, when we call \verb!multiplyArrayInts()!, we pass a reference to our array. Thus, after calling this second method, our array \textit{does} get modified, and these modifications are reflected in the \verb!main! method. \\
+
+Arrays are not ``exceptions" to Java's pass-by-reference construct, and it would be incorrect to say so. Instead, this is a direct consequence of how arrays are represented in memory.
+
+
+\subsection{Returning Arrays}
+
+Since arrays are represented by their memory addresses, we're able to create arrays in our \verb!main! method by assigning the reference to a reference that is returned in a method. In other words, we can return an array in a method, and we can use this array in our \verb!main! method by assigning the returned value to another array. \\
+
+Here's an example:
+
+\begin{lstlisting}
+public class ReturningArray {
+
+	public static String[] toUpperCase(String[] names) {
+		String[] updated = new String[names.length];
+
+		for (int i = 0; i < names.length; i++) {
+			if (names[i] == null) {
+				return names;
+			}
+			updated[i] = names[i].toUpperCase();
+		}
+
+		return updated;
+	}
+
+	public static void printArray(String[] data) {
+		for (int idx = 0; idx < data.length; idx++) {
+			System.out.print(data[idx] + " ");
+		}
+		System.out.println();
+	}
+
+	public static void main(String[] args) {
+		String[] friends = new String[2];
+
+		friends[0] = "JoHn";
+		friends[1] = "MaRY";
+		String[] result = toUpperCase(friends);
+		printArray(result);
+	}
+}
+\end{lstlisting}
+
+This is very similar to the example in which we demonstrated how to resize an array. Pretty much, we're just changing the reference of \verb!result! to whatever reference \verb!toUpperCase()! returns. The \verb!printArray(result)! statement en

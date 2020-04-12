@@ -1,0 +1,259 @@
+\section{Monday, October 21, 2019}
+
+
+\subsection{Privacy Leak}
+
+A \vocab{privacy leak} is an unintended method by which users of a class can modify the data associated with the class. The primary way in which privacy leaks take place is when a class method returns a reference to a mutable variable. Why? Because if we return a reference to a mutable variable, then the user can modify the variable through this reference. \\
+
+Here's an example of a class that has a privacy leak:
+
+\begin{lstlisting}
+package privacyLeak;
+
+public class Diary {
+	private String name;
+	private StringBuffer entries;
+
+	public Diary(String name) {
+		this.name = name;
+
+		/* Notice string parameter */
+		entries = new StringBuffer(name + "'s diary\n");
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void addEntry(String entry) {
+		entries.append(entry);
+	}
+	
+	/* Generates privacy leak */
+	public StringBuffer getDiary() {
+		return entries;
+	}
+
+	public String toString(){
+		return entries.toString();
+	}
+}
+\end{lstlisting}
+
+Our \verb!Diary! class has two instance variables: 
+\begin{itemize}
+    \item A \verb!name! variable is used to represent the owner of the diary.
+    \item A \verb!entries! variable is used to represent the entries inside of the diary.
+\end{itemize}
+
+The constructor of the class simply sets the \verb!name! instance variable to a user's inputted value, and it also instantiates the \verb!entries! variable. There are getter methods for the name and the diary, and there's an \verb!addEntry()! method that can be used to add a \verb!String! to the diary. \\
+
+However, there is an issue here: we \textit{only} want users to be able to add entries to the \verb!entries! variable through the \verb!addEntry()! method. But this is not the case --- the \verb!getDiary()! method returns the reference to the \verb!StringBuffer! associated with \verb!entries!, and it allows users to modify our \verb!entries! variable through the reference. \\
+
+The following driver program illustrates the problem: \\
+
+
+\begin{lstlisting}
+public class Driver {
+	public static void main(String[] args) {
+		Diary myDiary = new Diary("Mary");
+
+		System.out.println("Name: " + myDiary.getName());
+		myDiary.addEntry("finish project\n");
+		myDiary.addEntry("ate burrito\n");
+		System.out.println("Diary: " + myDiary);
+
+		/* Privacy Leak */
+		StringBuffer entries = myDiary.getDiary();
+		entries.append("ate cheesecake");
+		System.out.println("Diary: " + myDiary);
+	}
+}
+\end{lstlisting}
+
+Firstly, we create a diary for Mary. Next, we add a few entries through the \verb!Diary!'s \verb!.addEntry()! method. This is the only way in which users should be able to modify the diary (so this is fine). \\
+
+However, afterwards, we demonstrate a privacy leak, which occurs due to the \verb!getDiary()! method. We can assign the reference of the \verb!StringBuffer! in the class to a newly created \verb!StringBuffer! variable in our \verb!main! method. From there, we can simply use the \verb!append! method to modify our diary. This is not intended. \\
+
+
+How do we fix this issue? One solution is to simply deny users the access to the diary (so we don't return the \verb!StringBuffer! variable \textit{anywhere} in the \verb!Diary! class). But, what happens if we still want users to be able to read the diary? In this case, we need to return a \textbf{copy} of the \verb!StringBuffer!. The following code segment corrects the issue:
+
+\begin{lstlisting}
+	/* Privacy leak fixed */
+	public StringBuffer getDiary() {
+		return new StringBuffer(entries);
+	}
+\end{lstlisting}
+
+In the code above, note that we've corrected the privacy leak by creating a completely new \verb!StringBuffer! variable. Thus, even if the user were to modify the \verb!StringBuffer! reference that they obtain through the \verb!getDiary()! method, these changes will not be reflected in the \verb!Diary! instance itself. 
+
+\subsection{Copying Objects}
+
+There are a few different ways in which we can copy objects: \vocab{reference copying}, \vocab{deep copying}, and \vocab{shallow copying}. Each method has its pros and its cons. 
+
+
+First of all, deep copying consists of copying \textit{everything}. For example, if we want to make a deep copy of an object, then we need to duplicate everything related to that object. \\
+
+Reference copying isn't really ``copying" in the sense that one might think. Reference copying just means that we will share the reference to an object by assigning its reference to a second object. Here's an example of reference copying:
+
+\begin{lstlisting}
+public class RefCopy {
+    public static void main(String args[]) {
+        int arr[] = {1, 2, 3};
+        
+        // Reference copy.
+        int copy[] = arr; /* arr and copy share the same reference! */
+    }
+}
+\end{lstlisting}
+
+Note that we just assign the reference of \verb!arr! to \verb!copy!, which means that changes made to either array will be reflected in both arrays. \\
+
+Shallow copies are an ``intermediate" between reference copies and deep copies. Shallow copies duplicate as little as possibly so that modifying the copied object will not affect the old object.
+
+The following code segment illustrates the different types of copying:
+
+\begin{lstlisting}
+package refshallowdeepcopy1;
+
+
+public class Car {
+	private int id;
+	private StringBuffer history; /* Would our code change if we use String? */
+	
+	public Car(int id) {
+		this.id = id;
+		history = new StringBuffer();
+	}
+
+	public String toString() {
+		return "Id: " + id + ", History: " + history;
+	}
+	
+	public StringBuffer getHistory() {
+		/* returning copy to avoid privacy leak */
+		return new StringBuffer(history); 
+	}
+	
+	public void addHistory(String item) {
+		history.append(item);
+	}
+	
+	public static void referenceCopy(Car car1, Car car2) {
+		System.out.println("Reference Copy Example");
+		
+		car1 = car2;
+		
+		System.out.println(car1);
+		System.out.println(car2);
+		
+		System.out.println("End Reference Copy Example");	
+	}
+
+	public static void shallowCopy(Car car1, Car car2) {
+		System.out.println("Shallow Copy Example");
+		
+		car1.id = car2.id;
+		car1.history = car2.history;
+		
+		System.out.println(car1);
+		System.out.println(car2);
+		
+		System.out.println("End Shallow Copy Example");
+	}
+
+	public static void deepCopy(Car car1, Car car2) {
+		System.out.println("Deep Copy Example");
+		
+		car1.id = car2.id;
+		car1.history = new StringBuffer(car2.history);
+		
+		System.out.println(car1);
+		System.out.println(car2);
+		
+		System.out.println("End Deep Copy Example");
+	}
+
+	public static void main(String[] args) {
+		Car car1 = new Car(10), car2 = new Car(20);
+		
+		car1.addHistory(",oil change");
+		car1.addHistory(",fix door");		
+		car2.addHistory(", paint car");
+		System.out.println(car1);
+		
+		referenceCopy(car1, car2);
+		shallowCopy(car1, car2);
+		deepCopy(car1, car2);
+	}
+}
+\end{lstlisting}
+
+In the \verb!Car! class above, we have three copy methods: \verb!referenceCopy!, \verb!shallowCopy!, and \verb!deepCopy!. Each of these three methods take in two \verb!Car! objects, and it copies the second argument's contents into the first argument (so we copy \verb!car2! into \verb!car1!).  \\
+
+Here are the key observations that we can make:
+
+\begin{itemize}
+    \item The \verb!referenceCopy! method simply sets \verb!car1! to \verb!car2!. That is, we are simply setting the reference of \verb!car1! to the reference of \verb!car2!. The pros of reference copying is that we are not using much more memory (since there's still only one object), but a con is that the two references aren't referring to \textit{distinct} objects. Thus, changing the object through one of these references will be reflected when we access the object through the other reference.
+    \item The \verb!deepCopy! method makes copies of every instance variable individually. For instance, we create a completely new \verb!StringBuffer! variable for \verb!car1!'s history field. Modifying an object through one car's reference will not be reflected when we access the car associated with the other car's reference. 
+    \item The \verb!shallowCopy! method assigns each individual field of the new object to the corresponding field of the old object. Note that the two \verb!Car! objects have different references, but they might have the same reference to a common instance variable. In this case, we have two references to the same \verb!history! object. This is an intermediate between deep copying and reference copying. 
+\end{itemize}
+
+Here's another example. Consider the following \verb!CDCollection! class:
+
+\begin{lstlisting}
+package refshallowdeepcopy2;
+
+public class CDCollection {
+	private String name;
+	private RewriteableCD[] myFavorites;
+
+	public CDCollection(String name) {
+		this.name = name;
+		myFavorites = new RewriteableCD[2];
+		myFavorites[0] = new RewriteableCD("ABCS", "ChiquitaCS");
+		myFavorites[1] = new RewriteableCD("Lionel R.", "Goodbye");
+	}
+
+	public RewriteableCD[] getCDsReferenceCopy() {
+		return myFavorites;
+	}
+
+	public RewriteableCD[] getCDsShallowCopy() {
+		RewriteableCD[] copy = new RewriteableCD[myFavorites.length];
+		
+		for (int i = 0; i < copy.length; i++) {
+			copy[i] = myFavorites[i];
+		}
+
+		return copy;
+	}
+
+	public RewriteableCD[] getCDsDeepCopy() {
+		RewriteableCD[] copy = new RewriteableCD[myFavorites.length];
+		
+		for (int i = 0; i < copy.length; i++) {
+			copy[i] = new RewriteableCD(myFavorites[i]);
+		}
+
+		return copy;
+	}
+
+	public String toString() {
+		String answer = "Collection name: " + name + "[";
+		
+		answer += myFavorites[0] + " & " + myFavorites[1] + "]";
+		
+		return answer;
+	}
+}
+
+\end{lstlisting}
+
+This class just illustrates the same concepts but in a different way.
+
+\begin{itemize}
+    \item The \verb!getCDsReferenceCopy! returns a reference to the \verb!RewritableCD! array. Thus, we can create a reference copy of this array by simply setting a new array of the return value of this method.
+    \item The \verb!getCDsDeepCopy! copies \textit{everything}; it creates new instances of the objects that are stored inside of the array as well.
+    \item Finally, the \verb!getCDsShallowCopy! is an intermediate; it creates a completely new array, but it assigns the values of the array to the elements in the original array.
+\end{itemize}%

@@ -1,0 +1,189 @@
+\section{Friday, October 18, 2019}
+
+\subsection{Array Initialization Lists}
+Suppose we want to create an array with the integers one through five. One way of doing so would be writing, \verb!int arr[] = new int[5]! and subsequently setting \verb!arr[0]!, \verb!arr[1]!, and so on to their respective values. Alternatively, one might use a loop to set each value. \\
+
+Although it isn't possible to assign all of the elements at once, it is often helpful to use \vocab{initialization lists}, which allow us to create arrays ``on-the-fly." Arrays can be initialized at declaration time by explicitly writing the values enclosed in curly brackets. Thus, instead of the two solutions described above, we could instead just write 
+\[
+\verb!int arr[] = {1, 2, 3, 4, 5}!. 
+\]
+
+In fact, we can also use this syntax to only declare a few elements in the array. If there are fewer initializers than elements in the array, then the remaining elements are automatically initialized to zero. For example, writing \verb!int arr[10] = {1, 2, 3, 4, 5}! would set the first five elements to $1, 2, 3, 4,$ and $5$, but the last five elements would be set to zero (if we don't specify the size of the array in the square brackets, then the length of the array will just be equal to the number of elements we explicitly put in the initializer list).
+
+We can only use an initialization list in the form described above when we're declaring a variable. It wouldn't be valid, for instance, to pass an initialization list to a method. However, we can also create arrays on-the-fly with the following syntax, which can be passed into parameters: 
+
+\[
+\verb!int arr[] = new int[]{1, 2, 3, 4, 5};!
+\]
+
+Although we've only shown initialization lists for \verb!int! variables here, they are valid for any type. \\
+
+
+Here's an example:
+
+\begin{lstlisting}
+public class PassingArrays {
+    public void printArray(int[] arr) {
+        for (int i = 0; i < arr.length; i++) {
+            System.out.println(arr[i] + " ");
+        }
+        System.out.println();
+    }
+    
+    public static void main(String args[]) {
+        printArray(new int[]{5, 78, 4});
+    }
+}
+\end{lstlisting}
+
+Note that this is convenient because it saves us the time of creating a new array and setting each value individually when we aren't planning to use the array ever again.
+
+\subsection{Arrays in Classes}
+
+We've already seen that classes have instance variables, which represent the entities associated with the class. Classes can also have references to arrays, which can be useful at times.
+
+Before we demonstrate an example of a class that has a reference to an array, we'll first take a look at the following \verb!Student! class:
+
+\begin{lstlisting}
+package rosterExample;
+
+public class Student {
+	private String name;
+	private int score;
+	
+	/**
+	 * 
+	 * @param name
+	 * @param score value between 0 and 100
+	 */
+	public Student(String name, int score) {
+		this.name = name;
+		this.score = score;
+	}
+
+	/**
+	 * 
+	 * @return student's score
+	 */
+	public int getScore() {
+		return score;
+	}
+
+	/**
+	 * 
+	 * @param score
+	 */
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public String toString() {
+		return "name: " + name + ", score: " + score;
+	}
+}
+\end{lstlisting}
+
+The \verb!Student! class above simply represents a student in a class. Each student has a \verb!name! and a \verb!score!. 
+
+Now, we'll take a look at the following \verb!Roster! class, which is used to represent a class's roster of students. This class illustrates how having the an array's reference can be useful: 
+
+\begin{lstlisting}
+package rosterExample;
+
+/**
+ * Represents a class rosters.
+ * @author cmsc131
+ *
+ */
+
+public class Roster {
+	public static final String SCHOOL = "UMCP";
+	private Student[] allStudents;
+	private String courseName;
+	private int registered;
+	private static int totalRosters = 0;
+
+	/**
+	 * 
+	 * @param courseName course's name
+	 * @param totalSeats maximum capacity for the room
+	 */
+	public Roster(String courseName, int totalSeats) {
+		this.courseName = courseName;
+
+		allStudents = new Student[totalSeats];
+		registered = 0;
+		totalRosters++;
+	}
+
+	/**
+	 * 
+	 * @param name student's name
+	 * @param score value between 0 and a 100
+	 */
+	public void addStudent(String name, int score) {
+		if (registered < allStudents.length) {
+			allStudents[registered++] = new Student(name, score);
+		}
+	}
+
+	/**
+	 * 
+	 *  Returns a string with the number of students registered,
+	 *  and a list of students with their grade.
+	 */
+	public String toString() {
+		String answer = SCHOOL + "\n";
+		answer = "Course Name: " + courseName + "\n";
+
+		answer += "Students Registered: " + registered + "\n";
+		answer += "Students:\n";
+		for (int idx = 0; idx < registered; idx++) {
+			answer += allStudents[idx];
+			answer += ", grade: " + findGrade(allStudents[idx].getScore()) + "\n";
+		}
+
+		return answer;
+	}
+
+	/**
+	 * 
+	 * @return total number of rosters created.
+	 */
+	public static int getTotalRosters() {
+		return totalRosters;
+	}
+	
+	/**
+	 * 
+	 * @param score
+	 * @return letter grade based on cutoffs
+	 */
+	private static char findGrade(int score) {
+		int cutOffs[] = { 90, 80, 70, 60 };
+		char letterGrades[] = { 'A', 'B', 'C', 'D', 'F' };
+
+		int idx;
+		for (idx = 0; idx < cutOffs.length; idx++) {
+			if (score >= cutOffs[idx]) {
+				break;
+			}
+		}
+		
+		return letterGrades[idx];
+	}
+}
+\end{lstlisting}
+
+
+Observe that our \verb!Roster! class also has a \verb!static final String! variable storing the name of the school that the \verb!Roster! is for. Why do we declare this string as \verb!static!? Because \verb!static! variables are shared between all instances of our class. Thus, \textit{every} roster that we create will share the same \verb!String! variable. Since this \verb!String! is \verb!final!, we cannot change the school from \verb!UMCP! to some other school, so it makes sense to share the same ``UMCP" variable between all instances of the class. \\
+
+Next, note that our \verb!Roster! class has a reference to an array of \verb!Student! objects (called \verb!allStudents!). This is useful because we can now easily access a variable number of the students as a part of our class. It is also important to note how each of the methods in this class operate on the array:
+
+\begin{itemize}
+    \item The constructor of the class initializes the array with a size equal to a value provided by the user. 
+    \item The \verb!addStudent! method adds a new entry in our array of students.
+    \item The \verb!toString! method adds information about every student in the class by traversing the array with a for-loop. 
+\end{itemize}
+
+Another notable method is our \verb!Roster!'s \verb!findGrade()! method which takes in an \verb!int! variable and returns a \verb!char! corresponding to the letter grade that is associated with that score. This is done by keeping two arrays: \verb!cutOffs[]! and \verb!letterGrades[]! in which the $k^{\text{th}}$ value in \verb!cutOffs[]! corresponds to the letter grade in the $k^{\text{th}}$ position of \verb!letterGrades[]!. We find the first index $i$ for which our score is greater than the cutoff. Once \verb!score < cutOffs[idx]! is true, we use a \verb!break! statement to exit the loop, and we return the letter grade corresponding to that index. Note that the order in which we iterate over the cutoff scores is very important here: we are finding the \textit{largest} cutoff that our score is greater than. 

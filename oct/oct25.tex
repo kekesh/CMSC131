@@ -1,0 +1,24 @@
+\section{Friday, October 25, 2019}
+
+\subsection{Abstraction and Encapsulation}
+There are important two techniques used in Object-Oriented Programming that we need to become familiar with: abstraction and encapsulation. 
+
+\vocab{Abstraction} is a technique in which we provide a very high-level model of activity or data. Small details about the model's functionality are not specified to the user.  Abstraction can further be divided into two sub-categories, which are described below:
+\begin{enumerate}
+    \item \vocab{Procedural abstraction} is a type of abstraction in which the user is aware of what actions are being performed, but they are not told how the action is performed. For example, suppose we would like to sort a list of numbers. There are many algorithms that can do this for us. Under procedural abstraction, we would know that our end result is a sorted list of numbers, but we wouldn't know which algorithm is being used.
+    \item \vocab{Data abstraction} is a type of abstraction in which various data objects are known to the user, but how they are represented or implemented is not known to the user. An example of data abstraction is shown by representing a list of people. While the user would know that they have a list of people, they wouldn't know how the list is being represented (for example, we could use an array, an ArrayList, or any other data structure).
+\end{enumerate}
+
+An \vocab{abstract data type} (ADT) is an entity that has values and operations. More formally, an abstract data type is an implementation of interfaces (a set of methods). 
+Note that it is ``abstract" because it does not provide any details surrounding how these various operations are implemented. \\
+
+An example of an abstract data type is a queue, which supports the operation of inserting items to the end of the queue as well as the operation of retrieving items from the front of the queue. Note, again, that we are not concerned with how these operations should be performed internally. \\
+
+Finally, \vocab{encapsulation} is a design technique that calls for hiding implementation details while providing an interface (a set of methods) for data access. A familiar example of encapsulation is shown through the ArrayList in Java. The ArrayList provides various methods that are accessible to us, such as the \verb!.add()! and \verb!.at()! methods. We aren't concerned with how they are implemented internally.
+
+
+\subsection{Libraries}
+
+In Java, a \vocab{library} is an implementation of several useful routines shared by different programs. Java's mechanism for creating libraries is known as \vocab{packages}. We can import packages by using the \verb!import! keyword (typically at the beginning of our program). 
+
+For instance, when we were using \verb!Scanner!s, one might write \verb!import java.util.*;! at the top of their program (since the \verb!Scanner! class is contained in this package). In general, however, it not a good idea to import several packages. Why? Suppose we want to create a class called \verb!Donut!, but \verb!Donut! is already in a package we've included. Then, there will be clashing names, which can lead to confusion and even errors. The problem of importing too many packages is known as \vocab{namespace pollution}. We can get rid of some pollution when using the \verb!Scanner! class by writing \verb!import java.util.Scanner;! instead of \verb!import java.util.*;! (the asterisk at the end tells us to include \textit{everything} with the prefix \verb!java.util!). \\
