@@ -1,0 +1,128 @@
+\section{Wednesday, November 6, 2019}
+
+\subsection{More on Two-Dimensional Arrays}
+
+Suppose we have a two-dimensional array of \verb!String! objects. Like arrays of strings, two-dimensional arrays of strings do not actually store the string objects themselves. Instead, they store \textit{references} to the string objects. This means that it is possible to initialize a two-dimensional array in which each entry points to the exact same object (they could all have the same reference!). \\
+
+
+What happens if we pass a two-dimensional array into a method? Similar to one-dimensional arrays, we don't actually pass in a new two-dimensional array; instead, we just pass in the reference to the two-dimensional array. The consequence is that any changes made to the two-dimensional array in a method is reflected outside of that method.
+
+
+In order to get more practice with two-dimensional arrays, let's look at a few code examples that perform various tasks on two-dimensional arrays.
+
+Firstly, consider the following method that takes in a \verb!String! and converts the string into a two-dimensional character array (where separate rows are delimited by new-line characters):
+
+\begin{lstlisting}
+	public static char[][] getCharArray(String diagram) {
+		if (diagram == null || diagram.length() == 0) {
+			return null;
+		} else {
+			int maxRows = 0, maxCols = 0;
+
+			/* Computing number of rows */
+			for (int i = 0; i < diagram.length(); i++) {
+				if (diagram.charAt(i) == '\n') {
+					maxRows++;
+				}
+			}
+			maxRows++; // last row does not have '\n'
+
+			/* Computing row length */
+			for (int i = 0; i < diagram.length() && diagram.charAt(i) != '\n'; i++) {
+				maxCols++;
+			}
+
+			char board[][] = new char[maxRows][maxCols];
+			int strIndex = 0;
+			for (int row = 0; row < maxRows; row++) {
+				for (int col = 0; col < maxCols; col++) {
+					board[row][col] = diagram.charAt(strIndex++);
+				}
+				strIndex++; // skipping '\n'
+			}
+			
+			return board;
+		}
+	}
+\end{lstlisting}
+
+How does this method work?
+
+\begin{itemize}
+    \item Firstly, we need to determine the number of rows and the number of columns in the two-dimensional array that we want to create. Since each new row is delimited by the new-line character, we can simply traverse the string and count the number of new-line characters in order to determine the number of rows. Similarly, we can count the number of columns by counting the number of characters that come \textit{before} the first new-line character.
+    \item Once we've determined the number of rows and columns in our two-dimensional array, we can initialize our \verb!board! variable. Note that it was important to determine the dimensions of the two-dimensional array since we cannot change the dimensions of the array after initialization.
+    \item Finally, we traverse the array index-by-index. We keep a pointer -- called \verb!strIndex! --- to indicate where we currently are in our string, and we increment this pointer as we read the character at that position into our array. 
+\end{itemize}
+
+
+Now, we'll move on to other topics.
+
+\subsection{Model-View Controller}
+
+The \vocab{model view controller} is a design paradigm that keeps our components of code separate. It is a method of organizing our code's core functions in an organized, systematic manner. The three components that our software is separated into are summarized below:
+
+\begin{itemize}
+    \item The \vocab{model} component represents the central component of this design paradigm. It is used to represent the data, logic, and rules of the application being built.
+    \item The \vocab{view} component represents the ``output" of the model that is seen visually by the user. For instance, this could be a chart, diagram, or a table. The model continually updates the view component, and this is what the user sees.
+    \item The \vocab{controller} component represents the portion of our application that accepts input and interprets commands. This is important because the model can use the information from the controller in order to make updates. The ``controller" component might be something like a keyboard. 
+\end{itemize}
+
+Typically, software engineers are responsible for implementing the ``model" portion of this design paradigm, and they are provided with the ``view" component as well. 
+
+
+\subsection{ArrayLists}
+
+So far, we've discussed arrays. But arrays have a few problems:
+
+\begin{itemize}
+    \item First of all, arrays are not suitable for situations where the size of the array changes frequently.
+    \item Moreover, if we reach the maximum capacity of an array and we need to add an element, then we have to create a completely new array, copy over the elements, and finally add the desired elements.
+\end{itemize}
+
+These two problems, however, are solved by the \vocab{ArrayList}. The \verb!ArrayList! is a class in the Java library that implements a resizable array. ArrayLists hold references to objects, so we need to specify the type of the object that the ArrayList will store (if we're using primitive types, then we'll need to use the appropriate wrapper class, like \verb!Integer!). 
+
+Here are some useful methods that the \verb!ArrayList! class supports:
+
+\begin{itemize}
+    \item The \verb!ArrayList!'s default constructor initializes an arraylist of size $0$.
+    \item The \verb!add! method appends an object to the end of the arraylist (automatically expanding the arraylist if needed).
+    \item The \verb!remove(int idx)! method removes the element at index \verb!idx! (and automatically shifts the remaining elements to the left in order to close empty gaps).
+    \item The \verb!get(int idx)! method returns a reference to the element at index \verb!idx!. 
+    \item The \verb!toArray()! method returns a (standard) array with all of the elements in the arraylist.
+    \item The \verb!clear()! method removes all of the elements from the arraylist.
+    \item The \verb!size()! method returns the number of elements in the arraylist.
+\end{itemize}
+
+The following code segment illustrates a few of the ways in which we can use the \verb!ArrayList! class:
+
+\begin{lstlisting}
+public class ArrayListExample {
+	public static void main(String[] args) {
+		ArrayList<String> nameList = new ArrayList<String>();
+
+		/* List of names */
+		nameList.add("Barbara");
+		nameList.add("Anne");
+		nameList.add("Kelly");
+
+		System.out.println("*** After adding elements ***");
+		for (int i = 0; i < nameList.size(); i++) {
+			String name = nameList.get(i);
+			if (name.equals("Kelly")) {
+				name += " is my BFF";
+			}
+			System.out.println(name);
+		}
+
+		nameList.remove(1);
+		System.out.println("*** After removal ***");
+		System.out.println(nameList);
+
+		/* No type specified (old approach; don't use) */
+		ArrayList myList = new ArrayList();
+		myList.add("Jose");
+		String value = (String) myList.get(0);
+		System.out.println("Value retrieved: " + value);
+	}
+}
+\end{lstlisting}

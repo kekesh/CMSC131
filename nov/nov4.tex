@@ -1,0 +1,70 @@
+\section{Monday, November 4, 2019}
+
+Today, we'll start talking about \vocab{two-dimensional arrays}. We can declare a two-dimensional array with the following syntax:
+
+\begin{center}
+    \verb!char[][] arr = new char[numRows][numCols]!
+\end{center}
+
+Note that this is syntactically similar to what we write when we're initializing one-dimensional arrays. Except now, we need to specify both the number of rows \textit{and} the number of columns (rather than just the length of the array). We can interpret the array as a two-dimensional grid with the specified number of rows and the specified number of columns. 
+
+
+How does Java interpret a two-dimensional array? Java treats a two-dimensional array as an array of arrays. This means that Java allocates space for the array of array of references and then allocates space for the individual arrays. 
+
+Recall that in a one-dimensional array \verb!A!, we could access the element at index $i$ by writing \verb!A[i]!. This syntax changes in a two-dimensional array. For a two-dimensional array \verb!A!, we can access the element in the $i^{\text{th}}$ row and $j^{\text{th}}$ column by writing \verb!A[i][j]!. Furthermore, writing \verb!A[i]! would give us a reference to the array storing the elements in the $i^{\text{th}}$ row (two-dimensional arrays are arrays of arrays, so writing \verb!A[i]! to access the $i^{\text{th}}$ element in a two-dimensional array results in an array). This means that we can also write \verb!A[i].length! to get the length of the array in the $i^{\text{th}}$ row. \\
+
+Nested loops go hand-in-hand with two-dimensional arrays. The following is the standard nested loop to go row-by-row and column-by-column in a two-dimensional array:
+
+\begin{lstlisting}
+for (int row = 0; row < a.length; row++) {
+    for (int col = 0; col < a[row].length; col++) {
+        System.out.print(a[row][col]);
+    }
+    System.out.println();
+}
+\end{lstlisting}
+
+In the code segment above, we iterate over every row in our two-dimensional array. For each row that we visit, we process every column in the one-dimensional array. Note that the number of columns can be different for each row, which means that our two-dimensional array isn't necessarily a rectangle. An array with rows of different size is called a \vocab{ragged array}. 
+
+The following code segment illustrates how one might create a ragged array:
+
+
+\begin{lstlisting}
+char[][] a = new char[5][]; /* We create an array with five row. We haven't specified the size of each row yet. */
+a[0] = new char[8]; /* The first row will have eight columns. */
+a[1] = new char[3]; /* The second row will have three columns. */
+a[2] = new char[5]; /* The third row will have five columns. */
+a[3] = new char[0]; /* The fourth row won't have any columns. */
+a[4] = new char[10]; /* The fifth row will have ten columns. */
+\end{lstlisting}
+
+
+How else can we initialize two-dimensional arrays? Like one-dimensional arrays, we can also initialize two-dimensional arrays with an initialization list. Here's an example:
+
+\begin{lstlisting}
+int[][] a = { {1, 2}, {5, 10, 11}};
+\end{lstlisting}
+
+The code segment above creates a two-dimensional array of integers with two rows. The first row has two columns, and the second row has three columns. 
+
+To get more practice with two-dimensional array, let's look at a method that updates all of the values in an integer array by some constant:
+
+\begin{lstlisting}
+	public static void updateArray(int[][] data, int delta) {
+		for (int row = 0; row < data.length; row++) {
+			for (int col = 0; col < data[row].length; col++) {
+				data[row][col] += delta;
+			}
+		}		
+	}
+\end{lstlisting}
+
+How does this method work?
+
+\begin{itemize}
+    \item First of all, the end user provides us with an array \verb!data! and a constant value \verb!delta!. 
+    \item We use a nested for-loop in order to traverse every element in our two-dimensional array. We iterate over every row, and we iterate over every column in every row. 
+    \item For each entry we visit in our array, we add the value \verb!delta! to that entry.
+\end{itemize}
+
+Next time, we'll look at more applications of two-dimensional arrays, like two-dimensional arrays of references.

@@ -1,0 +1,218 @@
+\section{Friday, November 8, 2019}
+
+\subsection{Interfaces}
+
+In Java, an \vocab{interface} is a way to specify a behavior that a class must implement. Interfaces can contain method signatures and constant declarations, which tell ``force" the classes that use that interface to provide implementations of those methods. 
+
+We can create an interface using the \verb!interface! keyword in Java. Interfaces look pretty similar to classes. The following code segment illustrates an example of an interface:
+
+
+\begin{lstlisting}
+public interface Human {
+    public void eat();
+    public void sleep(int hours);
+}
+\end{lstlisting}
+
+Observe that our interface provides \vocab{function prototypes} (the name of the method, its return type, and its parameters), but it does not provide implementations of the method itself. Now consider the following class called \verb!Sofia!, which represents a human. 
+
+\begin{lstlisting}
+public class Sofia {
+    private int salary;
+    
+    public Sofia(int salary) {
+        this.salary = salary;
+    }
+    
+    @Override
+    public String toString() {
+        return "My name is Sofia!";
+    }
+}
+\end{lstlisting}
+
+This is a basic class, and it works just fine. But what if we want to specify that \verb!Sofia! uses the interface that we created earlier (when a class uses an interface, we say that the class \vocab{implements} the interface). We can specify that a class is implementing a specified interface by using the \verb!extends! keyword as follows:
+
+
+\begin{lstlisting}
+public class Sofia extends Human {
+    private int salary;
+    
+    public Sofia(int salary) {
+        this.salary = salary;
+    }
+    
+    @Override
+    public String toString() {
+        return "My name is Sofia!";
+    }
+}
+\end{lstlisting}
+
+However, the code segment above \textbf{does not} compile. Why? Because a class \textit{must} provide implementations for all of the function prototypes provided in the interface. Thus, we are ``forced" to provide implementations of methods whose prototypes are \verb!public void sleep(int hours);! and \verb!public void eat();!. The following modified code segment works just fine:
+
+
+\begin{lstlisting}
+public class Sofia extends Human {
+    private int salary;
+    
+    public Sofia(int salary) {
+        this.salary = salary;
+    }
+    
+    public void eat() {
+        System.out.println("Bagel");
+    }
+    
+    public void sleep(int hours) {
+        System.out.println("Sleeping for " + hours + " hours.");
+    }
+    
+    @Override
+    public String toString() {
+        return "My name is Sofia!";
+    }
+}
+\end{lstlisting}
+
+Why do we use interfaces? 
+\begin{itemize}
+    \item Firstly, it allows us to work towards abstraction. By making all classes representing people implement the \verb!Human! interface, we can clearly indicate that the classes we are implementing represent humans. By extension, we'll know that they have a certain set of methods (or constants).
+    \item Moreover, interfaces are a convenient way of specifying a contract that a class must meet. This could be helpful if one is working on a very large project with several classes, each of which must satisfy some requirement (e.g. set of methods). In this case, our code wouldn't even compile (errors are easy to spot and fix) if the requirements aren't met.
+\end{itemize}
+
+As mentioned, multiple distinct classes can implement the same interface, which is why interfaces are so convenient. 
+
+Interfaces are also useful because we can now use the name of an interface as the parameter to a method. For example, recall the \verb!Human! interface that we described earlier, and consider the following method one might implement in a driver program:
+
+\begin{lstlisting}
+public static void task(Human h) {
+    h.eat();
+}
+\end{lstlisting}
+
+This is valid syntax in Java even though \verb!Human! is an interface (not a class). This method permits any class that implements the \verb!Human! interface to be passed in as a parameter to the method. Thus, we could pass in an instance of \verb!Sofia! to this method, or we could pass in some other object that implements the \verb!Human! interface. Furthermore, note that we call the \verb!eat()! method on the \verb!Human! that is passed in. By assumption, we know that \verb!h! \textit{must} have an \verb!eat()! method since it is required by our \verb!Human! interface.
+
+
+Is it possible for interfaces to provide an implementation of a method? Yes, but we must use the \verb!default! keyword before the name of the method. This could be useful if we want all classes that implement the interface to have the exact same implementation of the method since the amount of code we have to write could be significantly reduced.
+
+In order to get more practice with interfaces, let's look at another example. Consider the following \verb!Animal! interface:
+
+\begin{lstlisting}
+package animalExample;
+
+public interface Animal {
+	public void feed(String food);
+
+	public int getAge();
+
+	public boolean manBestFriend();
+
+	default void planet() {
+		System.out.println("Earth");
+	}
+}
+\end{lstlisting}
+
+This interface contains the prototypes for three different methods, and it provides a default implementation for the \verb!planet! method. Now consider the following \verb!Piranha! class, which implements this interface:
+
+\begin{lstlisting}
+package animalExample;
+
+public class Piranha implements Animal {
+	private int age;
+
+	public Piranha(int age) {
+		this.age = age;
+	}
+
+	public void feed(String food) {
+		System.out.println("Piranha is eating " + food);
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public boolean manBestFriend() {
+		return false;
+	}
+}
+\end{lstlisting}
+
+Once again, note that that we're \textit{required} to provide implementations of the methods (with the same prototype) specified in our interface since we're implementing the interface. Next, consider the following \verb!Dog! class, which also implements the \verb!Animal! interface:
+
+
+\begin{lstlisting}
+package animalExample;
+
+public class Dog implements Animal {
+	private String name;
+	private int age;
+
+	public Dog(String name, int age) {
+		this.name = name;
+		this.age = age;
+	}
+
+	public void feed(String food) {
+		System.out.println("Feeding " + name + " with " + food);
+	}
+
+	public int getAge() {
+		return age;
+	}
+
+	public boolean manBestFriend() {
+		return true;
+	}
+
+	public void bark() {
+		System.out.println(name + " is barking");
+	}
+}
+\end{lstlisting}
+
+
+Now, if we create an instance of the \verb!Piranha! class, we can treat it as if it has the type \verb!Animal!. Here's a driver that illustrates this:
+
+\begin{lstlisting}
+package animalExample;
+
+public class Driver {
+	public static void feedAnimal(Animal animal) {
+		System.out.println("**** Feeding Animal ****");
+		System.out.println("Animal's age: " + animal.getAge());
+		animal.feed("hamburger");
+		animal.feed("pizza");
+		animal.feed("ice-cream");
+	}
+
+	public static void main(String[] args) {
+		int age = 3;
+		Dog lassie = new Dog("Lassie", age);
+
+		lassie.feed("taco");
+		lassie.bark();
+		lassie.bark();
+
+		Animal animal = lassie;
+		animal.feed("burrito");
+		System.out.println("Man Best friend: " + animal.manBestFriend());
+
+		Piranha piranha = new Piranha(5);
+		piranha.feed("cookies");
+
+		feedAnimal(lassie);
+		feedAnimal(piranha);
+	}
+}
+\end{lstlisting}
+
+Note the following:
+
+\begin{itemize}
+    \item Firstly, we instantiate a \verb!Dog! object. We're able to call the \verb!bark()! method since this method is implemented by the \verb!Dog! class.
+    \item Next, we see that we can create a new variable whose type is \verb!Animal! and assign it to our \verb!Dog! (they share the same reference). Why is this possible? Because \verb!Dog! implements the \verb!Animal! interface (every \verb!Dog! is also an \verb!Animal!, so this is valid!). Would it be possible to assign some a variable whose type is \verb!Dog! the reference of some other variable that implements the \verb!Animal! interface (like \verb!Piranha!)? The answer is NO --- not every \verb!Dog! is a \verb!Piranha!.
+    \item Next, we call our \verb!feedAnimal()! method with our \verb!Dog! variable and \verb!Piranha! variable. Both of these calls are valid since dogs and piranhas are both animals.
+\end{itemize}

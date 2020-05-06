@@ -1,4 +1,111 @@
 \section{Friday, November 1, 2019}
 
+Today, we'll continue looking at recursive methods (specifically in the context of arrays).
+
 \subsection{Recursive Array Methods}
 
+Let's look at a first example. The following code segment contains a recursive method called \verb!findElement! that returns \verb!true! or \verb!false! depending on whether or not an element is present in the provided array:
+
+\begin{lstlisting}
+	public static boolean findElement(int[] array, int target) {
+		return findElementAuxiliary(array, 0, target);
+	}
+
+	public static boolean findElementAuxiliary(int[] array, int index, int target) {
+		if (index > array.length - 1) { /* Empty array segment */
+			return false;
+		} else if (array[index] == target) {
+			return true;
+		} else {
+			return findElementAuxiliary(array, index + 1, target);
+		}
+	}
+\end{lstlisting}
+
+How does this code segment work?
+
+\begin{itemize}
+    \item The user calls the \verb!findElement! method. We have another method called \verb!findElementAuxiliary!, but this is just a recursive helper method that's used to aid us in our recursion (such a method is often called an \vocab{auxillary method}). 
+    \item The user who calls the \verb!findElement! method provides the method with an array called \verb!array! and some value to be searched for, which we call \verb!target!. 
+    \item From our \verb!findElement! method, we call our recursive auxillary method. The key difference between the \verb!findElementAuxillary! method is that it contains an additional argument called \verb!index!, which we'll use to represent which index we're currently looking at in the array (note that our \verb!findElement! method invokes this recursive auxillary method with \verb!index! set to $0$, which means that we'll start our search from the start of the array).
+    \item Now on each invocation to \verb!findElementAuxillary!, we make sure that the current index we're at is within the bounds of the array (and return \verb!false! if it isn't), and we subsequently check whether the element at \verb!array[index]! is equal to the element that we're searching for. If we've found the value that we're searching for in the array, then we return \verb!true!. Otherwise, we look at the next index in the array by recursively invoking the same function with the \verb!index! parameter incremented.
+\end{itemize}
+
+What's the point of having a recursive auxillary function? Can't we just make the user call \verb!findElementAuxillary!? Yes, we could, but the \verb!index! parameter isn't really relevant to the end user. We can abstract away how our method is searching for the target value by using an auxillary helper method. As a consequence, our user's function invocations are more readable (especially when we have multiple additional parameters). 
+
+Here's a second example, which is very similar to the previous example that we just looked at. The following code segment counts the number of times that a provided value occurs in a user's array (so we would return the value $0$ if the provided value doesn't exist in the array):
+
+\begin{lstlisting}
+    public static int instancesOfElement(int[] array, int element) {
+		return instancesOfElementAuxiliary(array, 0, element);
+	}
+
+	public static int instancesOfElementAuxiliary(int[] array, int index, int element) {
+		if (index > array.length - 1) { /* Empty array segment */
+			return 0;
+		} else if (array[index] == element) {
+			return 1 + instancesOfElementAuxiliary(array, index + 1, element);
+		} else {
+			return instancesOfElementAuxiliary(array, index + 1, element);
+		}
+	}
+\end{lstlisting}
+
+Once again, we make use of an auxillary helper function. Here's how this method works:
+
+\begin{itemize}
+    \item Our user invokes the function \verb!instancesOfElement! with their array and a value.
+    \item Our \verb!instancesOfElement! method invokes an auxillary helper function called \verb!instancesOfElementAuxiliary!, which contains an extra parameter called \verb!index!. The \verb!index! parameter will change when we make recursive invocations to the function; it represents which index we are currently looking at in the provided array.  
+    \item Firstly, we make sure that the \verb!index! that's passed in is still within the bounds of the array. If not, then we return \verb!0! since the value we're looking for can't appear any more times in the array.
+    \item If we're still in the bounds of the array, we check to see if the element at the index we're currently at is equal to the value whose occurrences we want to count. If so, we return one plus the number of occurrences of the value in the subarray after the current index. Otherwise, we don't add one, and we simply increment our index.
+\end{itemize}
+
+The overall structure of the previous two examples are very similar. Augmenting an auxillary recursive helper function with an additional index parameter is a common technique in recursion.
+
+
+\subsection{Zero-Length Arrays}
+
+For now, we're done with recursion, and we'll move on to new topics.
+
+Java permits us to create arrays with length $0$. Of course, we can't store any elements in an array of length $0$ (and as we've already mentioned, we can't resize arrays once they've been made), so how might this be useful? \\
+
+Zero-length arrays are useful because they allow us to simplify our code when we're dealing with ``special cases.". In order to motivate zero-length arrays, first consider the following code segment. The purpose of this method is to extract the negative elements of our user's inputted array into a new array: 
+
+\begin{lstlisting}
+	public static int[] getNegatives(int[] data) {
+		int count = 0;
+
+		for (int i = 0; i < data.length; i++) {
+			if (data[i] < 0) {
+				count++;
+			}
+		}
+
+		int[] answer = new int[count];
+		for (int i = 0, k = 0; i < data.length; i++) {
+			if (data[i] < 0) {
+				answer[k++] = data[i];
+			}
+		}
+
+		return answer;
+	}
+\end{lstlisting}
+
+
+This method works as follows:
+
+\begin{itemize}
+    \item Firstly, we create an integer variable called \verb!count! whose purpose is to simply count the number of negative entries in our user's inputted array.
+    \item Next, we use a for-loop and we increment \verb!count! whenever we encounter a negative value. After this first for-loop, \verb!count! correctly stores the number of negative values in \verb!data!.
+    \item Next, we create an array called \verb!answer! with size equal to \verb!count!. This array will be used to store the negative values in \verb!data!, and we'll return this array at the end.
+    \item Finally, we use a for-loop to iterate over \verb!data! again. Whenever we encounter a negative value, we insert it into the next available position into \verb!answer!.
+\end{itemize}
+
+What happens if we pass in an array that doesn't have \textit{any} negative values? In this case, \verb!count! equals $0$ after the first for-loop, and we initialize \verb!answer! to an array with length $0$. In the end of the method, we'll end up returning an empty array. \\
+
+Why is this useful? Because if we were to set the result of this function call to some array in a driver program, then referencing \verb!array.length! wouldn't result in an exception. The \verb!length! field of an empty array is correctly initialized to $0$. \\
+
+What would we do other than use an empty array? One might follow the convention of returning \verb!null! when handling a special case like this one. However, if we were to set an integer array variable the result of a method call that returned null, we would end up assigning the array \verb!null!. In this case, if we later tried to access the \verb!length! field of the array, we would end up with a \verb!NullPointerException!. \\
+
+Next time, we'll introduce two-dimensional arrays.
