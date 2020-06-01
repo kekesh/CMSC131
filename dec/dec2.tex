@@ -1,0 +1,38 @@
+\section{Monday, December 2, 2019}
+
+\subsection{Multiple Inheritance}
+
+\vocab{Multiple inheritance} is a feature of some object-oriented programming languages in which one class can inherit characteristics and features from more than one parent class. Essentially, multiple inheritance would allow a single class to extend more than one parent class. More generally, multiple inheritance is useful because there are many situations in whcih a class hierarchy is not adequate to describe a class' structure.  \\
+
+
+How can this be useful? Suppose we have a class called \verb!StudentAthlete!, and we have two other classes called \verb!Student! and \verb!Athlete!. It would be useful to have the \verb!StudentAthlete! class extend both \verb!Student! and \verb!Athlete! to inherit those classes' properties.  \\
+
+
+
+Unfortunately, Java doesn't support multiple inheritance. However, it does permit implementing multiple interfaces. We can simulate the notion of multiple inheritance in Java by simultaneously extending a class and implementing an interface. Essentially, we could just make one of the classes that we would be extending into an interface, and we would be able to implement that interface without restriction. It does not matter which class becomes the interface.% \\
+
+
+The syntax for this would look something like, 
+
+\[
+\verb!public class StudentAthlete extends Student implements Athlete!. 
+\]
+
+It's important to note that there is no limit on the number of interfaces that a class can implement (but a class can only \textit{extend} one other class!). Thus, this solution extends to the case in which we have several interrelated classes. 
+
+ With this solution, the \verb!StudentAthlete! class can be used anywhere that a \verb!Student! object is expected (because it \textit{derives} from \verb!Student!), and it can also be used anywhere that an \verb!Athlete! object is expected (because it \textit{implements} the public interface of \verb!Athlete!). 
+ 
+ \subsection{Dynamic Systems and State-Transition Diagrams}
+ 
+A \vocab{dynamic system} is a system that changes over time. Dynamic systems naturally arise when writing programs involving graphical user interfaces (e.g. a video game).  
+
+To motivate this problem, consider the following issue:
+\begin{quote}
+    How does a system respond to external events or some stimuli (these are called \vocab{event-driven responses})?
+\end{quote}
+
+
+One way to model this problem is with a \vocab{state transition diagram}, which is fully defined by a list of possible states that the system can be in, the \vocab{state transitions} that are possible (and under what circumstances they occur under), and what \vocab{actions} need to be performed in each step. 
+
+A basic example is a calculator program. In this program, our ``events" occur when the user hits the keys. The states are fully defined by the operands, memory, and internal state of the computation. The actions are to perform calculations and update the display. \\
+

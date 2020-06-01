@@ -1,4 +1,92 @@
 \section{Monday, November 18, 2019}
 
-\subsection{Iterators}
+\subsection{Early and Late Binding}
 
+
+Consider the following code segment:
+
+\begin{lstlisting}
+Faculty carol = new Faculty("Carol Tuffteacher", 458, 1995);
+Person p = carol;
+System.out.println(p.toString());
+\end{lstlisting}
+
+Given that both the \verb!Person! and \verb!Faculty! classes implement a \verb!toString()! method, which one should be used when executing the print statement on the third line? Should it be the \verb!Faculty! object's \verb!toString()! method? Or, should it be the \verb!Person! object's \verb!toString()! method? There are good arguments for either choice:
+\begin{itemize}
+    \item One argument is that the variable \verb!p! was initially declared to be of type person. Thus, we should use the Person's \verb!toString()! method. This is known as \vocab{early (static) binding}. The name makes sense since we know early on (as soon as we've declared the object) what method will be used.
+    \item The other argument says that the object to which \verb!p! is referring to was created as a \verb!Faculty! object, so we should use the \verb!Faculty! object's \verb!toString()! method. This is known as \vocab{late (dynamic) binding}. Again, this name is fitting since we don't figure out which method will be called when the person is initially declared.
+\end{itemize}
+
+There are pros and cons to both early binding and late binding. On one hand, early binding is more efficient since the decision of what set of methods should be used is determined at compile-time. On the other hand, late binding allows for more flexibility.
+
+By default, \textbf{Java uses late-binding}, so in our example, the \verb!Faculty!'s \verb!toString()! method will be called. Essentially, late binding says that the method that is called is dependent on the object's actual type, and not the declared type of the referring variable.
+
+\subsection{Inheritance versus Composition}
+
+Previously, we introduced the notion of \textit{inheritance}, which is a way to create complex classes from others. Another design pattern similar to inheritance is \vocab{composition}, which is when we ``give" the class that would extend another class an instance of its super class. \\
+
+The following code makes things more clear:
+
+\begin{lstlisting}
+// Inheritance
+public class ObjB extends ObjA {
+    ... 
+    call methodA();
+}
+
+// Composition
+public class ObjA {
+    public methodA() { ,... }
+}
+
+public class ObjB { 
+    ObjA a;
+    
+    // call a.methodA();
+}
+\end{lstlisting}
+
+How can we decide when to use inheritance versus composition? If \verb!ObjB! ``is a(n)" \verb!ObjA!, then we should use inheritance. On the other hand, if \verb!ObjB! \textit{has a(n)} \verb!ObjA!, then we should use composition. This is true because inheritance defines an ``is-a" relationship. \\
+
+A good example is when we have a \verb!Car! class and an \verb!Engine! class. We implement these classes by having \verb!Car! extend the \verb!Engine! class, but this is not how inheritance should be used (a \verb!Car! is not an \verb!Engine!). Thus, we should use composition (and have an \verb!Engine! as a field) inside of the \verb!Car! class.
+
+
+ \subsection{The Iterable Interface}
+The \vocab{Iterable Interface} defines a method called \verb!Iterator!, which returns an iterator that allows us to traverse a container (particularly lists). ArrayLists in Java implement the iterable interface. 
+
+The following example demonstrates how we can use iterators:
+
+\begin{lstlisting}
+public static void main(String[] args) {
+    ArrayList<String> myList = new ArrayList<String>();
+    myList.add("a");
+    myList.add("b");
+    
+    Iterator<String> it = myList.iterator();
+
+    while (it.hasNext()) {
+        System.out.println(it.next());
+    }
+}
+\end{lstlisting}
+
+This code segment will print out everything in our list \verb!myList!. 
+
+However, it turns out that we don't actually need to handle iterators ourselves. We can use the \vocab{enhanced for-loop} (also known as a \vocab{for-each loop}), which does this for us. These types of for-loops handle the iterator automatically. 
+
+Here's how we can use an enhanced for loop with our previous example:
+
+
+\begin{lstlisting}
+public static void main(String[] args) {
+    ArrayList<String> myList = new ArrayList<String>();
+    myList.add("a");
+    myList.add("b");
+    
+    for (String s : myList) {
+        System.out.println(s);
+    }
+}
+\end{lstlisting}
+
+The for loop in this code segment can be read as, ``for each string \verb!s! in \verb!myList!, print \verb!s!.''

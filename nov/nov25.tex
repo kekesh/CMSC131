@@ -1,0 +1,94 @@
+\section{Monday, November 25, 2019}
+
+\subsection{Object Binding}
+
+In Java, objects can access information about their type during runtime (\textit{dynamically}). For instance, recall that we discussed the \verb!getClass()! method, which returns a representation of the class of any object. \\
+
+Consider the following code segment:
+
+\begin{lstlisting}
+Person bob = new Person(...);
+Person ted = new Student(...);
+
+if (bob.getClass() == ted.getClass()) { ... } // false (ted is really a Student).
+\end{lstlisting}
+
+The conditional inside of the \verb!if! clause will evaluate to ``false." Why? Because the \verb!getClass()! method compares the runtime class of an object. Here, \verb!ted! was initially declared to be of type \verb!Person!, but it refers to a \verb!Student! type. This example further illustrates the fact that Java uses late (dynamic) binding. \\
+
+Next, we'll discuss the \verb!instanceof! keyword, which is used to determine whether one object is an instance of some other class. In terms of inheritance, Class A is an instance of Class B if Class A extends Class B. It's important to remember that \verb!instanceof! is an \textbf{operator} in Java, not a method call. Thus, we do not invoke \verb!.instanceof! on the object (there shouldn't be a period!).
+
+\begin{lstlisting}
+package university;
+
+public class InstanceGetClass {
+	public static void main(String[] args) {
+		Person bobp = new Person("Bob", 1);
+		Person teds = new Student("Ted", 2, 1990, 4.0);
+		Person carolf = new Faculty("Carol", 3, 2016);
+
+		/* Notice we are using Faculty variable rather than Person */
+		Faculty drSmithf = new Faculty("DrSmith", 4, 2010);
+
+		if (bobp.getClass() == teds.getClass()) {
+			System.out.println("1. bob and ted associated with same getClass value");
+		}
+
+		if (bobp instanceof Person) {
+			System.out.println("2. bob instance of Person");
+		}
+
+		if (teds instanceof Student) {
+			System.out.println("3. ted instance of Student");
+		}
+
+		if (teds instanceof Person) {
+			System.out.println("4. ted instance of Person");
+		}
+
+		if (bobp instanceof Student) {
+			System.out.println("5. bob instance of Student");
+		}
+
+		if (carolf instanceof Person) {
+			System.out.println("6. carol instance of Person");
+		}
+
+		if (carolf instanceof Student) {
+			System.out.println("7. carol instance of Student");
+		}
+
+		/* Following will not compile (compare against previous one) */
+		/*
+		 * if (drSmithf instanceof Student) {
+		 * System.out.println("drSmith instance of Student"); }
+		 */
+	}
+}
+\end{lstlisting}
+
+In this class, we're declaring three objects, \verb!bobp, teds!, and \verb!carolf! each of which have type \verb!Person!. The variable \verb!bobp! refers to a person, \verb!teds! refers to a \verb!Student!, and \verb!carolf! refers a \verb!Faculty! object. We also declare \verb!drSmithf! to be of type \verb!Faculty!, and \verb!drSmithf! also refers to a \verb!Faculty! object.
+
+
+Now, which of these \verb!if (...)! clauses will evaluate to ``true," and which will evaluate to false? 
+\begin{itemize}
+    \item The conditional \verb!bobp.getClass() == teds.getClass()! evaluates to false. Why? Because \verb!bobp! is a \verb!Person!, whereas \verb!teds! is a  \verb!Student!. Thus, the first print statement isn't printed.
+    \item The conditional \verb@bobp instanceof Person@ evaluates to true since \verb!bobp! is a Person.
+    \item The conditional \verb!teds instanceof Student! evaluates to true since \verb!teds! refers to a \verb!Student!.
+    \item \verb!teds instanceof Person! evaluates to true since \verb!teds! refers to a \verb!Student!, and a \verb!Student! extends the \verb!Person! class.
+    \item \verb!bobp instanceof Student! is false since \verb!bobp! has a \verb!Person! object, and \verb!Person! does not extend \verb!Student!.
+    \item \verb!carolf instanceof Person! evaluates to true since the \verb!Faculty! class extends \verb!Person! class. 
+    \item \verb!carolf instanceof Student! is false since \verb!Faculty! does not extend \verb!Student!.
+    \item \verb!drSmithf instanceof Student! is false since \verb!drSmithf! is a \verb!Faculty! object and also refers to a \verb!Faculty! type. In fact, a \verb!Faculty! object can never refer to a \verb!Student! object, so the Java compiler recognizes this and issues a compile-time error (the conditional can never be true).
+\end{itemize}
+
+Note that \verb!instanceof! even works with null parameters. \\
+
+\subsection{Command-Line Arguments}
+Recall that our main method declaration typically something like, \verb!public static void main(String[] args)!. We've used this declaration for the entire semester, but we haven't actually discussed what this means.
+
+Observe that our \verb!main! method has an argument \verb!String[] args!. In other words, it is called with an array of \verb!String! variables. These are commonly known as \vocab{command-line} arguments. On Unix and DOS-style systems, when a program is run from the command prompt, we are allowed to include options on the command line. For example, the Unix command \verb!javac fooBar.java! runs the \verb!javac! program on the file \verb!fooBar.java!. The string ``\verb!fooBar.java! is a command-line argument to the program (this command compiles the java program \verb!fooBar.java!). \\
+
+If we run our Java programs directly from the command prompt, the command-line arguments are typed right after the name of the Java program. For example, \verb!javac CommandArgTest.java! will compile the program \verb!CommandArgTest.java!. If we subsequently write, \verb!java CommandArgTest -f -foo -b bar!, then our program is run with the command-line arguments \verb!-f!, \verb!foo!, \verb!-b!, and \verb!bar!. These are placed into our \verb!args! array for us. \\
+
+Why are command-line arguments useful? First of all, they provide a way for a user running our program to pass in parameters at runtime. This might be a file name, or some special option that will affect how our program will run. 
+
