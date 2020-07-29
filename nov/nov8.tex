@@ -31,11 +31,11 @@ public class Sofia {
 }
 \end{lstlisting}
 
-This is a basic class, and it works just fine. But what if we want to specify that \verb!Sofia! uses the interface that we created earlier (when a class uses an interface, we say that the class \vocab{implements} the interface). We can specify that a class is implementing a specified interface by using the \verb!extends! keyword as follows:
+This is a basic class, and it works just fine. But what if we want to specify that \verb!Sofia! uses the interface that we created earlier (when a class uses an interface, we say that the class \vocab{implements} the interface). We can specify that a class is implementing a specified interface by using the \verb!implements! keyword as follows:
 
 
 \begin{lstlisting}
-public class Sofia extends Human {
+public class Sofia implements Human {
     private int salary;
     
     public Sofia(int salary) {
@@ -53,7 +53,7 @@ However, the code segment above \textbf{does not} compile. Why? Because a class 
 
 
 \begin{lstlisting}
-public class Sofia extends Human {
+public class Sofia implements Human {
     private int salary;
     
     public Sofia(int salary) {
