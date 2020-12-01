@@ -1,4 +1,4 @@
-These are lecture notes for Fall 2019's CMSC 131: Object Oriented Programming I course. Any errors are my own responsibility.
+These are lecture notes for Fall 2019's CMSC 131: Object Oriented Programming I course. Any errors are my own responsibility. I was not enrolled in this course; I wrote these notes as a TA.
 
 Please let me know about any mistakes at ekumar1@terpmail.umd.edu
 
