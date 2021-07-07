@@ -184,6 +184,6 @@ Here are some useful observations that we can make:
 
 \begin{itemize}
     \item First, we read in a \verb!double! on Line $9$. Line $10$ prints out the square root of the number, Line $11$ prints out the floor of the number, Line $12$ prints out the ceiling of the number, Line $13$ prints out the square of the number, and Line $14$ rounds the number.
-    \item On Line $18$, we print out \verb!Math.random()! $100$ times. What does \verb!Math.random()! do? It returns a pseudorandom number on the interval $[0, 1]$. 
+		\item On Line $18$, we print out \verb!Math.random()! $100$ times. What does \verb!Math.random()! do? It returns a pseudorandom number on the interval $[0, 1)$. 
     \item In the subsequent for-loops, we shift our interval \verb![0, 1]! to various other intervals so that we can generate random numbers in any interval we want. For example, if we add a constant value $c$ to \verb!Math.random()!, then we end up generating values in the interval \verb![c, 1 + c]!. Moreover, we can scale the interval by multiplying it by different values.
 \end{itemize}
