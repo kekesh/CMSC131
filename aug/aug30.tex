@@ -135,11 +135,11 @@ public class Example3 {
         Scanner scan = new Scanner(System.in);
         age = scan.nextInt();
         System.out.println("Age is " + age);
-        scanner.close();
+        scan.close();
     }
 }
 \end{lstlisting}
-This program takes in an integer from the programmer (through the console provided by Eclipse), and it subsequently prints \verb!Age is [age]!, where \verb![age]! is the integer provided by the user. Finally, we close the scanner by writing \verb!scanner.close()!, which indicates that we do not want the programmer to be able to provide any more input. \\
+This program takes in an integer from the programmer (through the console provided by Eclipse), and it subsequently prints \verb!Age is [age]!, where \verb![age]! is the integer provided by the user. Finally, we close the scanner by writing \verb!scan.close()!, which indicates that we do not want the programmer to be able to provide any more input. \\
 
 
 Here's another example:
